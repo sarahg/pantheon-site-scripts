@@ -1,0 +1,22 @@
+- Update script (core, plugins)
+-- Writes list of updates performed to txt file
+
+- Health checks script
+-- Backup list
+-- Pingdom uptime check
+-- Exploits check
+
+- Traffic check script
+-- Monthly visits, page views
+-- +/- from last month
+-- Pantheon plan check
+-- IPs flagged/blocked
+
+- Site performance script
+-- Lighthouse audit
+
+- Report builder
+-- Assemble output from above scripts into a report
+
+- Post to Slack
+- Set up on CircleCI
