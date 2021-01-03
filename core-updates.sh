@@ -7,6 +7,7 @@ DIR="${BASH_SOURCE%/*}"
 if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
 . "$DIR/functions/pantheon-script-colours"
 
+# @todo use an env var for the org
 ORG_UUID="1439ef14-9fed-428e-8943-902e36c763a9"
 SITES=$(terminus org:site:list --format=list --tag=maintenance --filter="framework=wordpress" -- $ORG_UUID)
 
@@ -31,6 +32,3 @@ done <<< "$SITES"
 
 echo "${TIP}Running core updates..."
 terminus site:mass-update:apply <<< "$SITES"
-
-# Use Advomatic script for deploying.
-# https://github.com/Advomatic/pantheon-tools/blob/main/pantheon-quick-deploy
