@@ -16,12 +16,12 @@ SITES=$(terminus org:site:list --format=list --tag=maintenance --filter="framewo
 while read -r SITE_UUID; do
     ENV_INFO="$(terminus env:info --fields=uncommitted_changes,connection_mode --format=json "${SITE_UUID}".dev)"
     DIRTY=$(jq .'uncommitted_changes' <<< "${ENV_INFO}" )
-    CONNECTION_MODE=$(jq .'connection_mode' <<< "${ENV_INFO}" )
+    CONNECTION_MODE=$(jq -r .'connection_mode' <<< "${ENV_INFO}" )
 
     if [[ "$DIRTY" == "true" ]]; then
         echo -e "${INVERSE}[warning]${NOINVERSE} Site $SITE_UUID has uncommitted code on Dev. Remediate before proceededing."
     
-    elif [[ "$CONNECTION_MODE" == '"sftp"' ]]; then
+    elif [[ "$CONNECTION_MODE" == "sftp" ]]; then
         # SFTP mode without uncommitted code is OK, 
         # but we still need to flip it to Git to proceed.
         echo "${INVERSE}[notice]${NOINVERSE} Changing connection setting for ${SITE_UUID}"
