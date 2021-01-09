@@ -9,9 +9,10 @@ TAG="testing"
 ORG_UUID="1439ef14-9fed-428e-8943-902e36c763a9"
 SITES=$(terminus org:site:list --field=name --tag=${TAG} --filter="framework=wordpress" -- $ORG_UUID)
 
-# @TODO VRT Test vs Live
+# @TODO Incorporate AutoPilot?
 
 # Deploy to Live
 while read -r SITENAME; do
     terminus env:deploy --note="Code updates." -- "${SITENAME}".live
+    # @todo add a cache clear?
 done <<< "$SITES"
