@@ -1,4 +1,4 @@
-- Update script (core, plugins)
+- Update script (core, plugins, themes)
 -- Writes list of updates performed to txt file
 
 - Health checks script
@@ -17,6 +17,7 @@
 
 - Report builder
 -- Assemble output from above scripts into a report
+
 
 - Post to Slack
 - Set up on CircleCI

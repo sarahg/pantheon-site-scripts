@@ -39,6 +39,8 @@ while read -r SITENAME; do
 
         done
 
+        # @TODO Update themes
+
         # Deploy to Test env.
         terminus env:deploy --sync-content --note="Plugin updates." -- "${SITENAME}".test
         terminus env:clear-cache "${SITENAME}".test
@@ -47,14 +49,4 @@ while read -r SITENAME; do
         echo "$SITENAME has no plugin updates."
     fi
 
-done <<< "$SITES"
-
-# @TODO Break out the deploy/QA steps to a different script.
-
-# Prompt for a quick manual QA.
-# @TODO VRT instead! Or Autopilot!
-# @TODO Only prompt on sites we actually updated something.
-echo "[notice] Go check the Test sites: "
-while read -r SITENAME; do
-    echo -e "- https://test-${SITENAME}.pantheonsite.io"
 done <<< "$SITES"
