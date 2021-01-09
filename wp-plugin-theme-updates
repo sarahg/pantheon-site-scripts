@@ -2,8 +2,8 @@
 
 set -eou pipefail
 
-#TAG="maintenance"
 TAG="testing"
+#TAG="maintenance"
 
 # @todo use an env var for the org
 ORG_UUID="1439ef14-9fed-428e-8943-902e36c763a9"
@@ -28,6 +28,7 @@ while read -r SITENAME; do
     then
 
         terminus connection:set "${SITENAME}".dev sftp
+        # @todo flag staged/uncommitted changes (e.g, leftovers from a script fail)
 
         # Update plugins and commit changes.
         if [ -n "$PLUGINS" ]
@@ -60,6 +61,9 @@ while read -r SITENAME; do
         # @todo build a full update list, write it to a file, and use it for the note
         terminus env:deploy --sync-content --note="Code updates." -- "${SITENAME}".test
         terminus env:clear-cache "${SITENAME}".test
+
+        # Put the dev site back in Git mode for added security.
+        terminus connection:set "${SITENAME}".dev git 
 
     fi
 done <<< "$SITES"

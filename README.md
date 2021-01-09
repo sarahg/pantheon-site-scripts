@@ -6,9 +6,13 @@
 
 Sarah's toolkit for caretaking of [Pantheon](https://pantheon.io) sites.
 
-## Run updates
+## Run site updates
 
-@TODO DOCUMENT THIS
+Run these scripts sequentially:
+
+1) core-updates
+2) wp-plugin-theme-updates
+3) test-and-deploy
 
 ## Install
 

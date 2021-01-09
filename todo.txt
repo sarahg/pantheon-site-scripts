@@ -1,7 +1,10 @@
 [x] Update script (core, plugins, themes)
 -- Error/crash handling (log errors; re-running if it failed should still output accurate info)
--- Writes list of updates performed to txt file
+-- Writes list of updates performed to html file
 -- Wrapper script to run everything + generate report
+-- Quick rollback script (restore live)
+
+or maybe the report is totally separate and uses the git log?
 
 - Health checks script
 -- Backup list

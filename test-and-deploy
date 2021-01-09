@@ -2,17 +2,27 @@
 
 set -eou pipefail
 
-#TAG="maintenance"
-TAG="testing"
+TAG="maintenance"
+#TAG="testing"
 
 # @todo use an env var for the org
 ORG_UUID="1439ef14-9fed-428e-8943-902e36c763a9"
 SITES=$(terminus org:site:list --field=name --tag=${TAG} --filter="framework=wordpress" -- $ORG_UUID)
 
-# @TODO Incorporate AutoPilot?
+# @TODO Incorporate AutoPilot
 
-# Deploy to Live
+# Make a backup and deploy to Live
+# @todo better deploy note
+# @todo skip if there isn't anything to deploy
 while read -r SITENAME; do
+    echo "Deploying $SITENAME..."
+    terminus backup:create "${SITENAME}".live # @todo do DB only
     terminus env:deploy --note="Code updates." -- "${SITENAME}".live
-    # @todo add a cache clear?
+    terminus env:clear-cache "${SITENAME}".live
+done <<< "$SITES"
+
+# @todo handling for cases where there are no updates.
+echo "[notice] Go check the Live sites: "
+while read -r SITENAME; do
+    echo -e "- https://live-${SITENAME}.pantheonsite.io"
 done <<< "$SITES"
