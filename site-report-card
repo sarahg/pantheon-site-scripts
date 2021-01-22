@@ -1,0 +1,41 @@
+#!/bin/bash
+
+set -eou pipefail
+
+#TAG="testing"
+TAG="maintenance"
+
+REPORT_PATH="/Users/sarahgerman/Sites/site-report-card-mvp/reports"
+
+# @todo use an env var for the org
+ORG_UUID="1439ef14-9fed-428e-8943-902e36c763a9"
+SITES=$(terminus org:site:list --field=name --tag=${TAG} --filter="framework=wordpress" -- $ORG_UUID)
+
+# Loop through all sites on the list.
+while read -r SITENAME; do
+    # @todo clone if it doesn't exist (connection:info for the URL)
+    cd /Users/sarahgerman/Sites/$SITENAME && git fetch origin
+
+    # Get the update list from Git.
+    TAGS=$(git tag | grep pantheon_live_ | sort -k1.15n | tail -1)
+    PREV_TAG=$(git tag | grep pantheon_live_ | sort -k1.15n | tail -2 | sed -n '1 p')
+    DATE=$(date +"%m-%d-%y")
+    git log --pretty=format:"%s%nAuthored by %an, %ar" ${TAG}...${PREV_TAG} > ${REPORT_PATH}/${SITENAME}-git-log-${DATE}.txt
+
+    # Health checks.
+    #BACKUPS_ENABLED=1 # @todo verify this w/ terminus backup:automatic:info
+    #LAST_BACKUP=$(terminus backup:list $SITENAME.live)
+    #UPTIME= # @todo pull from Pingdom
+    #EXPLOITS=$(terminus wp launchcheck exploits)
+
+    # Traffic report.
+    #VISITS
+    #PAGES_SERVED
+    #PLAN_INFO
+    #IPS BLOCKED?
+
+    # Site performance
+    # Lighthouse report
+    # New Relic Apdex (if applicable)
+
+done <<< "$SITES"
