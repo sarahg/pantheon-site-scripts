@@ -57,9 +57,13 @@ while read -r SITENAME; do
             done
         fi
 
+        # Apply DB updates on dev all at once.
+        terminus wp "${SITENAME}".dev -- core update-db
+
         # Deploy to Test env.
         # @todo build a full update list, write it to a file, and use it for the note
         terminus env:deploy --sync-content --note="Code updates." -- "${SITENAME}".test
+        terminus wp "${SITENAME}".test -- core update-db
         terminus env:clear-cache "${SITENAME}".test
 
         # Put the dev site back in Git mode for added security.
