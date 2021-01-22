@@ -16,8 +16,9 @@ SITES=$(terminus org:site:list --field=name --tag=${TAG} --filter="framework=wor
 # @todo skip if there isn't anything to deploy
 while read -r SITENAME; do
     echo "Deploying $SITENAME..."
-    terminus backup:create "${SITENAME}".live # @todo do DB only
+    terminus backup:create "${SITENAME}".live --element=db
     terminus env:deploy --note="Code updates." -- "${SITENAME}".live
+    terminus wp "${SITENAME}".live -- core update-db
     terminus env:clear-cache "${SITENAME}".live
 done <<< "$SITES"
 
