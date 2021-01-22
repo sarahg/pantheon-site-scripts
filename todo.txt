@@ -1,28 +1,27 @@
 [x] Update script (core, plugins, themes)
 -- Error/crash handling (log errors; re-running if it failed should still output accurate info)
--- Writes list of updates performed to html file
+-- Write all script output to a logfile
 -- Wrapper script to run everything + generate report
--- Quick rollback script (restore live)
-
-or maybe the report is totally separate and uses the git log?
+-- Quick rollback script (restore live?)
 
 - Health checks script
--- Backup list
--- Pingdom uptime check
+-- Backup list [!]
+-- Pingdom uptime check [!]
 -- Exploits check
 
 - Traffic check script
--- Monthly visits, page views
+-- Monthly visits, page views [!]
 -- +/- from last month
 -- Pantheon plan check
--- IPs flagged/blocked
+-- IPs flagged/blocked [!]
 
 - Site performance script
--- Lighthouse audit
+-- Lighthouse audit [!]
 
 - Report builder
 -- Assemble output from above scripts into a report
 
+- Deploy to site and return URL/email msg body
 
 - Post to Slack
 - Set up on CircleCI
