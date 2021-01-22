@@ -2,8 +2,12 @@
 
 set -eou pipefail
 
+terminus auth:login sarah@sarahgerman.com
+
 TAG="testing"
 #TAG="maintenance"
+
+date
 
 # @todo use an env var for the org
 ORG_UUID="1439ef14-9fed-428e-8943-902e36c763a9"
