@@ -2,9 +2,12 @@
 
 set -eou pipefail
 
+TAG="testing"
+#TAG="maintenance"
+
 # @todo use an env var for the org
 ORG_UUID="1439ef14-9fed-428e-8943-902e36c763a9"
-SITES=$(terminus org:site:list --format=list --tag=maintenance --filter="framework=wordpress" -- $ORG_UUID)
+SITES=$(terminus org:site:list --format=list --tag=${TAG} --filter="framework=wordpress" -- $ORG_UUID)
 
 # Make sure the dev env is clean.
 # Requires Sarah's Terminus fork to add the "uncommitted_changes" field.
