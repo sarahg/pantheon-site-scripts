@@ -1,4 +1,6 @@
-[x] Update script (core, plugins, themes)
+[!] for MVP
+
+[x] Update script (core, plugins, themes) [!]
 -- Error/crash handling (log errors; re-running if it failed should still output accurate info)
 -- Write all script output to a logfile
 -- Wrapper script to run everything + generate report
@@ -19,7 +21,7 @@
 -- Lighthouse audit [!]
 
 - Report builder
--- Assemble output from above scripts into a report
+-- Assemble output from above scripts into a report [!]
 
 - Deploy to site and return URL/email msg body
 

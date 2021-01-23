@@ -2,14 +2,22 @@
 
 set -eou pipefail
 
+PANTHEON_USER=$(jq -r '.userEmail' config.json)
+terminus auth:login $PANTHEON_USER
+
+BUILD_DATE="$(date +"%Y-%m-%d")"
+BUILD_LOG_FILE="build-log-$BUILD_DATE.log"
+
 # Run the core update script.
-core-updates
+core-updates 2>&1 | tee $BUILD_LOG_FILE
 
 # Run the plugin/theme update script.
-wp-plugin-theme-updates
+wp-plugin-theme-updates 2>&1 | tee -a $BUILD_LOG_FILE
 
 # Run the deploy script.
-test-and-deploy
+test-and-deploy 2>&1 | tee -a $BUILD_LOG_FILE
 
-# Build the report. @todo
+# Build the report.
+site-report-card 2>&1 | tee -a $BUILD_LOG_FILE
+
 # Post to Slack. @todo

@@ -2,11 +2,10 @@
 
 set -eou pipefail
 
-TAG="maintenance"
-#TAG="testing"
+#TAG="maintenance"
+TAG="testing"
 
-# @todo use an env var for the org
-ORG_UUID="1439ef14-9fed-428e-8943-902e36c763a9"
+ORG_UUID=$(jq -r '.orgID' config.json) 
 SITES=$(terminus org:site:list --field=name --tag=${TAG} --filter="framework=wordpress" -- $ORG_UUID)
 
 # @TODO Incorporate AutoPilot
