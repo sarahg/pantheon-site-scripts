@@ -2,8 +2,8 @@
 
 set -eou pipefail
 
-TAG="testing"
-#TAG="maintenance"
+#TAG="testing"
+TAG="maintenance"
 
 ORG_UUID=$(jq -r '.orgID' config.json) 
 SITES=$(terminus org:site:list --field=name --tag=${TAG} --filter="framework=wordpress" -- $ORG_UUID)
@@ -16,9 +16,9 @@ OSD_SLEEP_INTERVAL=5
 while read -r SITENAME; do
     echo "Site: $SITENAME"
     # Check for plugin updates.
-    PLUGINS="$(terminus wp "${SITENAME}".dev -- plugin update --all --format=json --dry-run < /dev/null)"
+    PLUGINS="$(terminus wp "${SITENAME}".dev -- plugin update --all --format=json --dry-run < /dev/null | jq -c '.[]')"
     # Check for theme updates.
-    THEMES="$(terminus wp "${SITENAME}".dev -- theme update --all --format=json --dry-run < /dev/null)"
+    THEMES="$(terminus wp "${SITENAME}".dev -- theme update --all --format=json --dry-run < /dev/null | jq -c '.[]')"
 
     if [ -n "$PLUGINS" ] || [ -n "$THEMES" ]
     then
@@ -31,9 +31,9 @@ while read -r SITENAME; do
         then
             echo "$SITENAME has updates. Applying updates..."
             for PLUGIN in $PLUGINS; do
-                SLUG="$(echo "$PLUGIN" | jq -r '.[].name')"
-                INSTALLED="$(echo "$PLUGIN" | jq -r '.[].version')"
-                AVAILABLE="$(echo "$PLUGIN" | jq -r '.[].update_version')"
+                SLUG="$(echo "$PLUGIN" | jq -r '.name')"
+                INSTALLED="$(echo "$PLUGIN" | jq -r '.version')"
+                AVAILABLE="$(echo "$PLUGIN" | jq -r '.update_version')"
 
                 terminus wp "${SITENAME}".dev -- plugin update "${SLUG}" --format=summary < /dev/null
                 MESSAGE="Update $SLUG ($INSTALLED => $AVAILABLE)."
@@ -46,9 +46,9 @@ while read -r SITENAME; do
         if [ -n "$THEMES" ]
         then
             for THEME in $THEMES; do
-                SLUG="$(echo "$THEME" | jq -r '.[].name')"
-                INSTALLED="$(echo "$THEME" | jq -r '.[].version')"
-                AVAILABLE="$(echo "$THEME" | jq -r '.[].update_version')"
+                SLUG="$(echo "$THEME" | jq -r '.name')"
+                INSTALLED="$(echo "$THEME" | jq -r '.version')"
+                AVAILABLE="$(echo "$THEME" | jq -r '.update_version')"
 
                 terminus wp "${SITENAME}".dev -- theme update "${SLUG}" < /dev/null
                 MESSAGE="Update $SLUG ($INSTALLED => $AVAILABLE)."
