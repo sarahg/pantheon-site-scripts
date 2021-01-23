@@ -8,7 +8,8 @@ TAG="testing"
 ORG_UUID=$(jq -r '.orgID' config.json) 
 SITES=$(terminus org:site:list --field=name --tag=${TAG} --filter="framework=wordpress" -- $ORG_UUID)
 
-# @TODO Incorporate AutoPilot
+# @TODO Incorporate AutoPilot/VRT
+# @TODO Throw light traffic at the Test site and check for errors/500s
 
 # Make a backup and deploy to Live
 # @todo better deploy note

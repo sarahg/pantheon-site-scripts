@@ -12,6 +12,8 @@
 -- Exploits check
 
 - Traffic check script
+-- Broken Link report [!]
+-- Top 404s [!]
 -- Monthly visits, page views [!]
 -- +/- from last month
 -- Pantheon plan check
@@ -19,6 +21,7 @@
 
 - Site performance script
 -- Lighthouse audit [!]
+-- Error log report
 
 - Report builder
 -- Assemble output from above scripts into a report [!]
