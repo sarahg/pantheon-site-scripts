@@ -28,5 +28,5 @@
 
 - Deploy to site and return URL/email msg body
 
+- Set up on GCP Cloud Scheduler https://cloud.google.com/scheduler/
 - Post to Slack
-- Set up on CircleCI
