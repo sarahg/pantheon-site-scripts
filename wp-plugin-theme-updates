@@ -31,6 +31,7 @@ while read -r SITENAME; do
         then
             echo "$SITENAME has updates. Applying updates..."
             for PLUGIN in $PLUGINS; do
+                # @todo refactor this as a function, it's the same for theme/plugin
                 SLUG="$(echo "$PLUGIN" | jq -r '.name')"
                 INSTALLED="$(echo "$PLUGIN" | jq -r '.version')"
                 AVAILABLE="$(echo "$PLUGIN" | jq -r '.update_version')"
@@ -63,7 +64,7 @@ while read -r SITENAME; do
         # Deploy to Test env.
         # @todo build a full update list, write it to a file, and use it for the note
         terminus env:deploy --sync-content --note="Code updates." -- "${SITENAME}".test
-        terminus wp "${SITENAME}".test -- core update-db
+        terminus wp "${SITENAME}".test -- core update-db < /dev/null
         terminus env:clear-cache "${SITENAME}".test
 
         # Put the dev site back in Git mode for added security.

@@ -18,7 +18,7 @@ while read -r SITENAME; do
     echo "Deploying $SITENAME..."
     terminus backup:create "${SITENAME}".live --element=db
     terminus env:deploy --note="Code updates." -- "${SITENAME}".live
-    terminus wp "${SITENAME}".live -- core update-db
+    terminus wp "${SITENAME}".live -- core update-db < /dev/null
     terminus env:clear-cache "${SITENAME}".live
 done <<< "$SITES"
 
