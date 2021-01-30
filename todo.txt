@@ -1,32 +1,42 @@
 [!] for MVP
 
-[x] Update script (core, plugins, themes) [!]
+[x] Updater script (core, plugins, themes) [!]
 -- Error/crash handling (log errors; re-running if it failed should still output accurate info)
 -- Write all script output to a logfile
--- Wrapper script to run everything + generate report
+-- Wrapper script to run everything
 -- Quick rollback script (restore live?)
 
-- Health checks script
--- Backup list [!]
--- Pingdom uptime check [!]
--- Exploits check
+-- Utilizing SFTP mode is not great. Maybe this would work better like this:
+--- Check out the repo in a basic linux container that has Git + WP-CLI + Terminus
+--- Use Git to update everything
 
-- Traffic check script
+-- Basic VRT
+
+== REPORT ==
+- Monthly update list [!]
+
+- Health checks
+-- Backup list
+-- Pingdom uptime check [!]
+-- Exploits check [!]
+
+- Traffic checks
 -- Broken Link report [!]
 -- Top 404s [!]
--- Monthly visits, page views [!]
+-- Monthly visits, page views
 -- +/- from last month
 -- Pantheon plan check
 -- IPs flagged/blocked [!]
 
-- Site performance script
--- Lighthouse audit [!]
+- Site performance checks
+-- Lighthouse audit
 -- Error log report
 
 - Report builder
 -- Assemble output from above scripts into a report [!]
 
-- Deploy to site and return URL/email msg body
+- Deploy to site and return URL/email msg body (sftp up to live env uploads dir maybe?)
+-- Could lock this page down to wp-admins if we serve it via a PHP script
 
 - Set up on GCP Cloud Scheduler https://cloud.google.com/scheduler/
 - Post to Slack
