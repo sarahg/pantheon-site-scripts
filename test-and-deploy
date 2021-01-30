@@ -8,7 +8,6 @@ SITELIST="sites.txt"
 # @TODO Throw light traffic at the Test site and check for errors/500s
 
 # Make a backup and deploy to Live
-# @todo better deploy note
 # @todo skip if there isn't anything to deploy
 while IFS='' read -r SITENAME || [ -n "${SITENAME}" ]; do
     echo "Deploying $SITENAME..."
