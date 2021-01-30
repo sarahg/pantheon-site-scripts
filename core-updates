@@ -12,6 +12,7 @@ SITES=$(terminus org:site:list --format=list --tag=${TAG} --filter="framework=wo
 
 # Make sure the dev env is clean.
 # Requires Sarah's Terminus fork to add the "uncommitted_changes" field.
+# @TODO split this into a separate script? should do this before updating plugins too.
 while read -r SITE_UUID; do
 
     # @todo check if there are updates first. if not, skip

@@ -1,0 +1,10 @@
+#!/bin/bash
+
+set -eou pipefail
+
+SITENAME=${1}
+CONFIG_FILE="backstop-config/${SITENAME}-backstop.json"
+
+# Build a reference file and run VRT.
+backstop reference --configPath=${CONFIG_FILE}
+backstop test --configPath=${CONFIG_FILE}

@@ -7,7 +7,13 @@ Sarah's toolkit for maintenance work on sites running on [Pantheon](https://pant
 Run these scripts sequentially:
 
 1) core-updates
-2) wp-plugin-theme-updates
+2) wp-plugin-updates
+3) run-vrt SITENAME
+
+Optional. 
+VRT requires backstopJS. If needed, run `npm install -g backstopjs` to install globally.
+Running vrt requires a site-specific config file in `backstop-config/`.
+
 3) test-and-deploy
 4) site-report-card
 

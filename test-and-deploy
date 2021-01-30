@@ -5,7 +5,6 @@ set -eou pipefail
 #SITELIST="sites-test.txt"
 SITELIST="sites.txt"
 
-# @TODO Incorporate AutoPilot/VRT
 # @TODO Throw light traffic at the Test site and check for errors/500s
 
 # Make a backup and deploy to Live
