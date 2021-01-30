@@ -7,7 +7,7 @@ SITELIST="sites.txt"
 
 # Number of seconds to pause between applying the update and trying to commit.
 # Pantheon takes a few seconds to register the code diffs as committable.
-OSD_SLEEP_INTERVAL=8
+OSD_SLEEP_INTERVAL=5
 
 # Loop through all sites on the list.
 while IFS='' read -r SITENAME || [ -n "${SITENAME}" ]; do
@@ -38,7 +38,7 @@ while IFS='' read -r SITENAME || [ -n "${SITENAME}" ]; do
 
         # Deploy to Test env.
         # @todo build a full update list and use it for the note
-        terminus env:deploy --sync-content --note="Plugin updates." -- "${SITENAME}".test
+        terminus env:deploy --sync-content --note="Maintenance updates." -- "${SITENAME}".test
         terminus wp "${SITENAME}".test -- core update-db < /dev/null
         terminus env:clear-cache "${SITENAME}".test
 
