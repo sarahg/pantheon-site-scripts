@@ -2,18 +2,15 @@
 
 set -eou pipefail
 
-#TAG="testing"
-TAG="maintenance"
-
-ORG_UUID=$(jq -r '.orgID' config.json) 
-SITES=$(terminus org:site:list --field=name --tag=${TAG} --filter="framework=wordpress" -- $ORG_UUID)
+#SITELIST="sites-test.txt"
+SITELIST="sites.txt"
 
 # Number of seconds to pause between applying the update and trying to commit.
 # Pantheon takes a few seconds to register the code diffs as committable.
-OSD_SLEEP_INTERVAL=5
+OSD_SLEEP_INTERVAL=8
 
 # Loop through all sites on the list.
-while read -r SITENAME; do
+while IFS='' read -r SITENAME || [ -n "${SITENAME}" ]; do
     echo "Site: $SITENAME"
     # Check for plugin updates.
     PLUGINS="$(terminus wp "${SITENAME}".dev -- plugin update --all --format=json --dry-run < /dev/null | jq -c '.[]')"
@@ -62,8 +59,8 @@ while read -r SITENAME; do
         terminus wp "${SITENAME}".dev -- core update-db
 
         # Deploy to Test env.
-        # @todo build a full update list, write it to a file, and use it for the note
-        terminus env:deploy --sync-content --note="Code updates." -- "${SITENAME}".test
+        # @todo build a full update list and use it for the note
+        terminus env:deploy --sync-content --note="Plugin updates." -- "${SITENAME}".test
         terminus wp "${SITENAME}".test -- core update-db < /dev/null
         terminus env:clear-cache "${SITENAME}".test
 
@@ -71,11 +68,11 @@ while read -r SITENAME; do
         terminus connection:set "${SITENAME}".dev git 
 
     fi
-done <<< "$SITES"
+done < "$SITELIST"
 
 # Updates are done, go check them out.
 # @todo handling for cases where there are no updates.
 echo "[notice] Go check the Test sites: "
-while read -r SITENAME; do
+while IFS='' read -r SITENAME || [ -n "${SITENAME}" ]; do
     echo -e "- https://test-${SITENAME}.pantheonsite.io"
-done <<< "$SITES"
+done < "$SITELIST"

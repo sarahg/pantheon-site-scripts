@@ -2,11 +2,8 @@
 
 set -eou pipefail
 
-#TAG="maintenance"
-TAG="testing"
-
-ORG_UUID=$(jq -r '.orgID' config.json) 
-SITES=$(terminus org:site:list --field=name --tag=${TAG} --filter="framework=wordpress" -- $ORG_UUID)
+SITELIST="test-sites.txt"
+#SITELIST="sites.txt"
 
 # @TODO Incorporate AutoPilot/VRT
 # @TODO Throw light traffic at the Test site and check for errors/500s
@@ -14,16 +11,16 @@ SITES=$(terminus org:site:list --field=name --tag=${TAG} --filter="framework=wor
 # Make a backup and deploy to Live
 # @todo better deploy note
 # @todo skip if there isn't anything to deploy
-while read -r SITENAME; do
+while IFS='' read -r SITENAME || [ -n "${SITENAME}" ]; do
     echo "Deploying $SITENAME..."
     terminus backup:create "${SITENAME}".live --element=db
     terminus env:deploy --note="Code updates." -- "${SITENAME}".live
     terminus wp "${SITENAME}".live -- core update-db < /dev/null
     terminus env:clear-cache "${SITENAME}".live
-done <<< "$SITES"
+done < $SITELIST
 
 # @todo handling for cases where there are no updates.
 echo "[notice] Go check the Live sites: "
-while read -r SITENAME; do
+while IFS='' read -r SITENAME || [ -n "${SITENAME}" ]; do
     echo -e "- https://live-${SITENAME}.pantheonsite.io"
-done <<< "$SITES"
+done < $SITELIST
