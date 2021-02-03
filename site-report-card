@@ -2,48 +2,50 @@
 
 set -eou pipefail
 
-TAG="testing"
-#TAG="maintenance"
+SITELIST="sites-test.txt"
+#SITELIST="sites.txt"
 
-REPORT_PATH="/Users/sarahgerman/Sites/site-report-card-mvp/reports"
-
-MONTH="2021-01" # @todo arg
-
-ORG_UUID=$(jq -r '.orgID' config.json) 
-SITES=$(terminus org:site:list --field=name --tag=${TAG} --filter="framework=wordpress" -- $ORG_UUID)
+MONTH="2021-01" # @todo arrrrg
 
 # Loop through all sites on the list.
-while read -r SITENAME; do
+while IFS='' read -r SITENAME || [ -n "${SITENAME}" ]; do
 
-    # Create the report page.
-    REPORT_FILE="reports/${SITENAME}-${MONTH}.html"
-    cp reports/template.html $REPORT_FILE
-    sed -e "s/<!--sitename-->/${SITENAME}/g" reports/template.html > $REPORT_FILE
+    # Copy the report template.
+    REPORT_DIR=reports/output/$SITENAME-$MONTH
+    mkdir "${REPORT_DIR}"
+    REPORT_FILE="${REPORT_DIR}/index.html"
+    cp reports/template.html "${REPORT_FILE}"
 
-    # @todo clone if it doesn't exist (connection:info for the URL)
-    #cd /Users/sarahgerman/Sites/$SITENAME && git fetch origin
+    #sed -e "s/<!--sitename-->/${SITENAME}/g" reports/template.html > $REPORT_FILE
 
-    # Get the update list from Git.
-    #TAGS=$(git tag -l --format='%(refname:short):%(creatordate:short)' | grep pantheon_live | grep $MONTH)
-    #for TAG in $TAGS; do
-
-        #${REPORT_PATH}/${SITENAME}-git-log-${DATE}.txt
-    #done
+    # Get code updates from this month.
+    # @todo these timestamps are in UTC. 
+    # Commits made late in the day on the last day of the month aren't going to show up here.
+    COMMITS="$(terminus env:code-log --format=json "${SITENAME}".live | jq -c '.[] | select( .datetime | contains('\"$MONTH\"'))')"
 
     # Health checks.
-    #BACKUPS_ENABLED=1 # @todo verify this w/ terminus backup:automatic:info
-    #LAST_BACKUP=$(terminus backup:list $SITENAME.live)
     #UPTIME= # @todo pull from Pingdom
-    #EXPLOITS=$(terminus wp launchcheck exploits)
+    #EXPLOITS=$(terminus wp launchcheck secure)
 
     # Traffic report.
     #VISITS
     #404s/Broken Links
+    #linkchecker https://www.ccrp.org/ --ignore-url="/wp-json/" --file-output=csv
+    #awk '($9 ~ /404/)' nginx-access.log* | awk '{print $7}' | sort | uniq -c | sort -rn > 404s.txt
+
     #PAGES_SERVED
+    #terminus env:metrics ccrp-org.live --period=month
     #PLAN_INFO
-    #IPS BLOCKED?
+
+    #IPS BLOCKED? -- use nginx-log-analyzer
+    # fix log formatter, its showing internal IPs
 
     # Site performance
     # Lighthouse report
 
-done <<< "$SITES"
+    # Build JSON files.
+    # @todo this isn't really json
+    mkdir "${REPORT_DIR}"/json
+    echo "${COMMITS}" > "${REPORT_DIR}"/json/updates.json
+
+done < $SITELIST

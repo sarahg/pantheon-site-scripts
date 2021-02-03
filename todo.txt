@@ -6,14 +6,12 @@
 -- Wrapper script to run everything
 -- Quick rollback script (restore live?)
 
--- Utilizing SFTP mode is not great. Maybe this would work better like this:
---- Check out the repo in a basic linux container that has Git + WP-CLI + Terminus
---- Use Git to update everything
-
--- Basic VRT
+[x] Basic VRT
+-- Get tests for CCRP to pass regardless of content edits
+-- Or run tests against a multidev
 
 == REPORT ==
-- Monthly update list [!]
+[x] Monthly update list [!]
 
 - Health checks
 -- Backup list
@@ -26,7 +24,7 @@
 -- Monthly visits, page views
 -- +/- from last month
 -- Pantheon plan check
--- IPs flagged/blocked [!]
+-- IPs flagged/blocked
 
 - Site performance checks
 -- Lighthouse audit
