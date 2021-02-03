@@ -25,6 +25,11 @@ while IFS='' read -r SITENAME || [ -n "${SITENAME}" ]; do
 
     # Health checks.
     #UPTIME= # @todo pull from Pingdom
+    # Backups
+    # terminus workflow:list catparty --format=json | jq -c '.[] | select(.workflow | contains("Automated backup for the \"live\""))'
+    #BACKUPS_ENABLED= (True if any returned)
+    #LATEST_BACKUP= (get top entry)
+
     #EXPLOITS=$(terminus wp launchcheck secure)
 
     # Traffic report.
@@ -33,17 +38,18 @@ while IFS='' read -r SITENAME || [ -n "${SITENAME}" ]; do
     #linkchecker https://www.ccrp.org/ --ignore-url="/wp-json/" --file-output=csv
     #awk '($9 ~ /404/)' nginx-access.log* | awk '{print $7}' | sort | uniq -c | sort -rn > 404s.txt
 
-    #PAGES_SERVED
+    # PAGES_SERVED
     #terminus env:metrics ccrp-org.live --period=month
     #PLAN_INFO
 
-    #IPS BLOCKED? -- use nginx-log-analyzer
+    # IPS BLOCKED? -- use nginx-log-analyzer
     # fix log formatter, its showing internal IPs
 
     # Site performance
     # Lighthouse report
 
     # Build JSON files.
+    # @todo building a single file would be nicer client-side probs
     mkdir "${REPORT_DIR}"/json
     echo "${COMMITS}" | jq -s '.' > "${REPORT_DIR}"/json/updates.json
 
