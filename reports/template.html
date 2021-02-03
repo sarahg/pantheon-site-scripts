@@ -14,14 +14,21 @@
 
 <body>
     <div id="root">
-        <h1>Site Report: <!--sitename--></h1>
+        <h1>Site Report: <span class="primary-domain"></span></h1>
 
         <h2>Software updates</h2>
         <div id="updates">
         </div>
 
         <h2>Health checks</h2>
-        <div id="checks"></div>
+        <div id="checks">
+            <ul>
+                <li>Uptime: <span class="uptime"></span></li>
+                <li>Automated daily backups: <span class="backups-enabled"></span></li>
+                <li>Last backup: <span class="backups-latest"></span></li>
+                <li>Exploits: <span class="exploits"></span></li>
+            </ul>
+        </div>
 
         <h2>Traffic report</h2>
         <div id="traffic"></div>
