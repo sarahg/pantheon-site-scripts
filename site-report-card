@@ -44,8 +44,7 @@ while IFS='' read -r SITENAME || [ -n "${SITENAME}" ]; do
     # Lighthouse report
 
     # Build JSON files.
-    # @todo this isn't really json
     mkdir "${REPORT_DIR}"/json
-    echo "${COMMITS}" > "${REPORT_DIR}"/json/updates.json
+    echo "${COMMITS}" | jq -s '.' > "${REPORT_DIR}"/json/updates.json
 
 done < $SITELIST
