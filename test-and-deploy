@@ -20,5 +20,6 @@ done < $SITELIST
 # @todo handling for cases where there are no updates.
 echo "[notice] Go check the Live sites: "
 while IFS='' read -r SITENAME || [ -n "${SITENAME}" ]; do
+    # @todo curl the homepage and verify HTTP/200
     echo -e "- https://live-${SITENAME}.pantheonsite.io"
 done < $SITELIST
