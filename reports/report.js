@@ -1,4 +1,3 @@
-alert('hi')
 
 // @todo Render git log as a ul
 

@@ -4,6 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <link type="text/css" rel="stylesheet" href="style.css" media="all" />
 
     <script type="text/javascript" src="json/updates.js"></script>
     <script type="text/javascript" src="json/healthchecks.js"></script>
@@ -14,24 +15,33 @@
 
 <body>
     <div id="root">
-        <h1>Site Report: <span class="primary-domain"></span></h1>
+        <h1>Site report for <span class="report-domain">sarahgerman.com</span></h1>
+        <h2 class="report-month">January 2021</h2>
 
-        <h2>Software updates</h2>
-        <div id="updates">
+        <h3>Software updates</h3>
+        <div id="report-updates">
+            <p>No updates needed this month.</p>
         </div>
 
-        <h2>Health checks</h2>
+        <h3>Health checks</h3>
         <div id="checks">
             <ul>
-                <li>Uptime: <span class="uptime"></span></li>
-                <li>Automated daily backups: <span class="backups-enabled"></span></li>
-                <li>Last backup: <span class="backups-latest"></span></li>
-                <li>Exploits: <span class="exploits"></span></li>
+                <li>Uptime: <span class="report-uptime">100%</span></li>
+                <li>Automated daily backups: <span class="report-backups-auto">Enabled</span></li>
+                <li>Last backup: <span class="report-backups-latest"></span>April 20, 2020</li>
+                <li>Exploits: <span class="report-exploits">No exploits found.</span></li>
             </ul>
         </div>
 
-        <h2>Traffic report</h2>
-        <div id="traffic"></div>
+        <h3>Traffic report</h3>
+        <div id="traffic">
+            <ul>
+                <li>Top 404s for review: <span class="report-404s">62</span> (<a href="#">view list</a>)</li>
+                <li>Broken links: <span class="report-broken-links">12</span> (<a href="#">view list</a>)</li>
+                <li>Unique visits: <span class="report-visits">420</span></li>
+                <li>Page views: <span class="report-pageviews">1,000</span></li>
+            </ul>
+        </div>
 
     </div>
 

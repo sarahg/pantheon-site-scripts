@@ -24,7 +24,8 @@ while IFS='' read -r SITENAME || [ -n "${SITENAME}" ]; do
     COMMITS="$(terminus env:code-log --format=json "${SITENAME}".live | jq -c '.[] | select( .datetime | contains('\"$MONTH\"'))')"
 
     # Health checks.
-    #UPTIME= # @todo pull from Pingdom
+    #UPTIME= # @todo pull from Pingdom PINGDOM_API_TOKEN_PERSONAL
+
     # Backups
     # terminus workflow:list catparty --format=json | jq -c '.[] | select(.workflow | contains("Automated backup for the \"live\""))'
     #BACKUPS_ENABLED= (True if any returned)
@@ -37,10 +38,7 @@ while IFS='' read -r SITENAME || [ -n "${SITENAME}" ]; do
     #404s/Broken Links
     #linkchecker https://www.ccrp.org/ --ignore-url="/wp-json/" --file-output=csv
     #awk '($9 ~ /404/)' nginx-access.log* | awk '{print $7}' | sort | uniq -c | sort -rn > 404s.txt
-
-    # PAGES_SERVED
     #terminus env:metrics ccrp-org.live --period=month
-    #PLAN_INFO
 
     # IPS BLOCKED? -- use nginx-log-analyzer
     # fix log formatter, its showing internal IPs

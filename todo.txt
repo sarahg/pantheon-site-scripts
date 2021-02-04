@@ -14,7 +14,7 @@
 [x] Monthly update list [!]
 
 - Health checks
--- Backup list
+-- Backup list [!]
 -- Pingdom uptime check [!]
 -- Exploits check [!]
 
