@@ -16,12 +16,13 @@ while IFS='' read -r SITENAME || [ -n "${SITENAME}" ]; do
     REPORT_FILE="${REPORT_DIR}/index.html"
     cp reports/template.html "${REPORT_FILE}"
 
-    #sed -e "s/<!--sitename-->/${SITENAME}/g" reports/template.html > $REPORT_FILE
+    PRIMARY_DOMAIN="$(terminus domain:list --format=json "${SITENAME}".live | jq -c '.[] | select(.primary=="true")')"
+    # @todo fallback to first custom domain if we don't have a primary domain set
 
     # Get code updates from this month.
     # @todo these timestamps are in UTC. 
-    # Commits made late in the day on the last day of the month aren't going to show up here.
-    COMMITS="$(terminus env:code-log --format=json "${SITENAME}".live | jq -c '.[] | select( .datetime | contains('\"$MONTH\"'))')"
+    # Commits made late in the day on the last day of the month will be in the wrong report.
+    COMMITS="$(terminus env:code-log --format=json "${SITENAME}".live | jq -c '.[] | select(.datetime | contains('\"$MONTH\"'))')"
 
     # Health checks.
     #UPTIME= # @todo pull from Pingdom PINGDOM_API_TOKEN_PERSONAL
@@ -34,21 +35,18 @@ while IFS='' read -r SITENAME || [ -n "${SITENAME}" ]; do
     #EXPLOITS=$(terminus wp launchcheck secure)
 
     # Traffic report.
-    #VISITS
     #404s/Broken Links
     #linkchecker https://www.ccrp.org/ --ignore-url="/wp-json/" --file-output=csv
     #awk '($9 ~ /404/)' nginx-access.log* | awk '{print $7}' | sort | uniq -c | sort -rn > 404s.txt
     #terminus env:metrics ccrp-org.live --period=month
 
-    # IPS BLOCKED? -- use nginx-log-analyzer
-    # fix log formatter, its showing internal IPs
-
-    # Site performance
-    # Lighthouse report
-
-    # Build JSON files.
-    # @todo building a single file would be nicer client-side probs
+    # Write all our findings to a JSON file for use by the report template.
     mkdir "${REPORT_DIR}"/json
-    echo "${COMMITS}" | jq -s '.' > "${REPORT_DIR}"/json/updates.json
+    JSON_STRING=$( jq -n \
+                  --arg site "$SITENAME" \
+                  --arg updates "$COMMITS" \
+                  --arg domain "$PRIMARY_DOMAIN" \
+                  '[{updates: $updates, site: $site, domain: $domain}]' )
+    echo "${JSON_STRING}" > "${REPORT_DIR}"/json/report.json
 
 done < $SITELIST
