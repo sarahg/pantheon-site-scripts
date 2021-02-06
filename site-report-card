@@ -2,10 +2,10 @@
 
 set -eou pipefail
 
-SITELIST="sites-test.txt"
-#SITELIST="sites.txt"
+#SITELIST="sites-test.txt"
+SITELIST="sites.txt"
 
-MONTH="2021-01" # @todo arrrrg
+MONTH=${1} # e.g, 2021-01
 
 create_file() {
     SITENAME=${1}
@@ -28,7 +28,7 @@ while IFS='' read -r SITENAME || [ -n "${SITENAME}" ]; do
     create_file "${SITENAME}"
 
     DOMAINS="$(terminus domain:list --format=json "${SITENAME}".live)"
-    PRIMARY_DOMAIN="$(echo "${DOMAINS}" | jq -c '.[] | select(.primary==true) | .id')"
+    PRIMARY_DOMAIN="$(echo "${DOMAINS}" | jq -r '.[] | select(.primary==true) | .id')"
     if [ -z "$PRIMARY_DOMAIN" ]; then
         PRIMARY_DOMAIN="live-$SITENAME.pantheonsite.io"
     fi
@@ -55,10 +55,12 @@ while IFS='' read -r SITENAME || [ -n "${SITENAME}" ]; do
     # Hackerz
     EXPLOITS="$(terminus wp "${SITENAME}".live launchcheck -- secure --format=json < /dev/null | jq '.exploited.result')"
 
-    # Traffic report. Diff script?
+    # Traffic stuff. Diff script? @todo
     # linkchecker https://${PRIMARY_DOMAIN} --ignore-url="/wp-json/" --file-output=csv
     # awk '($9 ~ /404/)' nginx-access.log* | awk '{print $7}' | sort | uniq -c | sort -rn > 404s.txt
     # SFTP full lists to dev site (mkdir, upload, return link?) @todo
+    # SFTP_CONNECTION=$(terminus connection:info "${SITENAME}".dev --field=sftp_command)
+    # eval $SFTP_CONNECTION
     
     TRAFFIC_REPORT_URL="https://${PRIMARY_DOMAIN}/wp-content/uploads/maintenance-reports/${MONTH}"
     PANTHEON_METRICS="$(terminus env:metrics "${SITENAME}".live --period=month --datapoints=2 --format=json | jq -s '.')"
@@ -71,14 +73,13 @@ while IFS='' read -r SITENAME || [ -n "${SITENAME}" ]; do
                   --arg site "$SITENAME" \
                   --argjson updates "$COMMITS_JSON" \
                   --arg domain "$PRIMARY_DOMAIN" \
+                  --arg uptime "$UPTIME" \
                   --arg backups_on "$BACKUPS_ENABLED" \
                   --argjson backups_latest "$LATEST_BACKUP" \
                   --argjson exploits "$EXPLOITS" \
                   --argjson metrics "$PANTHEON_METRICS" \
                   --arg trafficURL "$TRAFFIC_REPORT_URL" \
-                  '[{updates: $updates, site:$site, domain:$domain, backups_on:$backups_on, backups_latest:$backups_latest, exploits:$exploits, metrics:$metrics, trafficURL: $trafficURL}]' )
+                  '[{updates: $updates, site:$site, domain:$domain, uptime:$uptime, backups_on:$backups_on, backups_latest:$backups_latest, exploits:$exploits, metrics:$metrics, trafficURL: $trafficURL}]' )
     echo "${JSON_STRING}" > "${REPORT_DIR}"/json/report.json
-
-    # Convert the HTML file to a PDF?
 
 done < $SITELIST
