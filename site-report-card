@@ -2,7 +2,7 @@
 
 set -eou pipefail
 
-start=`date +%s`
+start=$(date +%s)
 
 #SITELIST="sites-test.txt"
 SITELIST="sites.txt"
@@ -43,7 +43,7 @@ while IFS='' read -r SITENAME || [ -n "${SITENAME}" ]; do
     # Might be wrong for commits at the end of the last day of the month.
     # To get this right we'd need to work with a local copy of the repo and 
     # utilize git config --global log.date local https://stackoverflow.com/a/7651782/1940172
-    COMMITS="$(terminus env:code-log --fields=datetime,message --format=json "${SITENAME}".live | jq -c '.[] | select(.datetime | contains('\"$MONTH\"'))')"
+    COMMITS="$(terminus env:code-log --fields=datetime,message --format=json "${SITENAME}".live | jq -c '.[] | select(.datetime | contains('\""${MONTH}"\"'))')"
     COMMITS_JSON=$(echo "${COMMITS}" | jq -s '.')
 
     # Health checks.
@@ -63,13 +63,13 @@ while IFS='' read -r SITENAME || [ -n "${SITENAME}" ]; do
     EXPLOITS="$(terminus wp "${SITENAME}".live launchcheck -- secure --format=json < /dev/null | jq '.exploited.result')"
 
     # Traffic checks: broken links, 404s.
-    linkchecker https://${PRIMARY_DOMAIN} --ignore-url="/wp-json/" --ignore-url="xmlrpc" --check-extern --file-output=text
-    mv linkchecker-out.txt $REPORT_DIR/broken-links.txt
+    linkchecker https://"${PRIMARY_DOMAIN}" --ignore-url="/wp-json/" --ignore-url="xmlrpc" --check-extern --file-output=text
+    mv linkchecker-out.txt "${REPORT_DIR}"/broken-links.txt
 
     # Get top 404s from nginx access logs.
-    collect-logs $SITENAME
-    mv logs $REPORT_DIR
-    awk '($9 ~ /404/)' logs/nginx-access.log* | awk '{print $7}' | sort | uniq -c | sort -rn > $REPORT_DIR/404s.txt
+    collect-logs "${SITENAME}"
+    mv logs "${REPORT_DIR}"
+    awk '($9 ~ /404/)' logs/nginx-access.log* | awk '{print $7}' | sort | uniq -c | sort -rn > "${REPORT_DIR}"/404s.txt
 
     # SFTP full lists to dev site (mkdir, upload, exit) @todo
     # SFTP_CONNECTION=$(terminus connection:info "${SITENAME}".dev --field=sftp_command)
@@ -98,6 +98,6 @@ while IFS='' read -r SITENAME || [ -n "${SITENAME}" ]; do
 
 done < $SITELIST
 
-end=`date +%s`
+end=$(date +%s)
 runtime=$((end-start))
 echo $runtime
