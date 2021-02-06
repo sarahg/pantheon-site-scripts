@@ -7,11 +7,13 @@ fetch('json/report.json').then(response => {
   console.log(data);
 
   // Light data massaging.
-  let latest_backup = data[0].backups_latest.finished_at; // @todo convert timestamp
+  let latest_backup_unix_ts = data[0].backups_latest.finished_at;
+  let backup_date = new Date(latest_backup_unix_ts * 1000);
+  latest_backup = backup_date.toLocaleString();
 
-  // Get the first object in metrics.timeseries.
-  // This has to have two records because Terminus doesn't allow for a daterange.
+  // Get the first object in metrics.timeseries. We will always have 2 (this month, last month).
   let metricsLatestKey = Object.keys(data[0].metrics.timeseries)[0];
+
   // Format numbers nicer (e.g 1234 => 1,234).
   let visits = new Intl.NumberFormat().format(
     data[0].metrics.timeseries[metricsLatestKey].visits
@@ -23,7 +25,7 @@ fetch('json/report.json').then(response => {
   // Build an object of fields/content to populate.
   let replace = {
     "report-domain": data[0].domain,
-    "report-month": data[0].month, // @todo fix format
+    "report-month": getReportDate(data),
     "report-uptime": data[0].uptime,
     "report-backups-auto": data[0].backups_on,
     "report-backups-latest": latest_backup,
@@ -52,3 +54,12 @@ fetch('json/report.json').then(response => {
 }).catch(err => {
   console.error('Error loading report.json: ' + err)
 });
+
+// https://reactgo.com/javascript-get-previous-month-name/
+const getReportDate = (data) => {
+  const current = new Date();
+  current.setMonth(current.getMonth() - 1);
+  let month = current.toLocaleString("default", { month: "long" });
+  let reportYear = data[0].month.split("-")[0];
+  return `${month} ${reportYear}`;
+};

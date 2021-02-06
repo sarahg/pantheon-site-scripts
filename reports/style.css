@@ -9,19 +9,15 @@ body {
 
 h1 {
     margin-bottom: .67em;
+    font-size: 1.8em;
 }
 h2 {
-    
-}
-h3 {
+    font-size: 1.35em;
     opacity: .8;
 }
-
-h4 {
+h3 {
     margin: 0 0 2em;
-    font-style: italic;
 }
-
 section {
     margin-top: 1em;
 }

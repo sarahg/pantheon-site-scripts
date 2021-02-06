@@ -2,14 +2,19 @@
 
 set -eou pipefail
 
+start=`date +%s`
+
 #SITELIST="sites-test.txt"
 SITELIST="sites.txt"
 
 MONTH=${1} # e.g, 2021-01 # @todo throw a nice friendly error when i forget this
+# or just default to last month
 
+REPORT_DIR=reports/output/$SITENAME-$MONTH
+
+# Copy the report template into a new dir for this month.
 create_file() {
     SITENAME=${1}
-    REPORT_DIR=reports/output/$SITENAME-$MONTH
     if [ ! -d "$REPORT_DIR" ]; then
         mkdir "${REPORT_DIR}"
     fi
@@ -36,6 +41,8 @@ while IFS='' read -r SITENAME || [ -n "${SITENAME}" ]; do
     # Get code updates from this month.
     # @todo these timestamps are in UTC. 
     # Might be wrong for commits at the end of the last day of the month.
+    # To get this right we'd need to work with a local copy of the repo and 
+    # utilize git config --global log.date local https://stackoverflow.com/a/7651782/1940172
     COMMITS="$(terminus env:code-log --fields=datetime,message --format=json "${SITENAME}".live | jq -c '.[] | select(.datetime | contains('\"$MONTH\"'))')"
     COMMITS_JSON=$(echo "${COMMITS}" | jq -s '.')
 
@@ -55,12 +62,17 @@ while IFS='' read -r SITENAME || [ -n "${SITENAME}" ]; do
     # Hackerz
     EXPLOITS="$(terminus wp "${SITENAME}".live launchcheck -- secure --format=json < /dev/null | jq '.exploited.result')"
 
-    # Traffic stuff. Diff script? @todo
-    # linkchecker https://${PRIMARY_DOMAIN} --ignore-url="/wp-json/" --file-output=csv
+    # Traffic checks: broken links, 404s.
+    linkchecker https://${PRIMARY_DOMAIN} --ignore-url="/wp-json/" --ignore-url="xmlrpc" --check-extern --file-output=text
+    mv linkchecker-out.txt $REPORT_DIR/broken-links.txt
+
+    # Get logs for 404s @todo
+    # get-nginx-logs $SITENAME
     # awk '($9 ~ /404/)' nginx-access.log* | awk '{print $7}' | sort | uniq -c | sort -rn > 404s.txt
-    # SFTP full lists to dev site (mkdir, upload, return link?) @todo
+
+    # SFTP full lists to dev site (mkdir, upload, exit) @todo
     # SFTP_CONNECTION=$(terminus connection:info "${SITENAME}".dev --field=sftp_command)
-    # eval $SFTP_CONNECTION
+    # eval $SFTP_CONNECTION?
     
     TRAFFIC_REPORT_URL="https://${PRIMARY_DOMAIN}/wp-content/uploads/maintenance-reports/${MONTH}"
     PANTHEON_METRICS="$(terminus env:metrics "${SITENAME}".live --period=month --datapoints=2 --format=json)"
@@ -84,3 +96,7 @@ while IFS='' read -r SITENAME || [ -n "${SITENAME}" ]; do
     echo "${JSON_STRING}" > "${REPORT_DIR}"/json/report.json
 
 done < $SITELIST
+
+end=`date +%s`
+runtime=$((end-start))
+echo $runtime
