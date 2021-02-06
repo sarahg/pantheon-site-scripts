@@ -58,13 +58,12 @@ fetch('json/report.json').then(response => {
   else {
     updatesMarkup = "<ul>";
     for (const update in updates) {
-        let datetime = updates[update].datetime;
-        let d = new Date(datetime);
-        let options = {
+        // Format the date better.
+        let d = new Date(updates[update].datetime);
+        let updateDate = d.toLocaleString("en-US", {
           month: "short",
           day: "2-digit",
-        };
-        let updateDate = d.toLocaleString('en-US', options);
+        });
         updatesMarkup += `<li>${updates[update].message}<br><small>${updateDate}</small></li>`;
     }
     updatesMarkup += "</ul>";
