@@ -1,0 +1,18 @@
+#!/bin/bash
+
+mkdir logs
+
+function site-id {
+  terminus site:info "$1" --field=ID
+}
+
+SITE_UUID="$(site-id ${1})"
+ENV=live
+for app_server in `dig +short appserver.$ENV.$SITE_UUID.drush.in`;
+do
+  rsync -rlvz --size-only --ipv4 --progress -e 'ssh -p 2222' $ENV.$SITE_UUID@appserver.$ENV.$SITE_UUID.drush.in:logs/nginx/nginx-access* ./logs
+done
+
+# Unpack archived logs
+# @todo this throws an error if we don't have any
+gunzip ./logs/nginx-access.log-*

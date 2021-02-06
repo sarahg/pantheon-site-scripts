@@ -66,9 +66,10 @@ while IFS='' read -r SITENAME || [ -n "${SITENAME}" ]; do
     linkchecker https://${PRIMARY_DOMAIN} --ignore-url="/wp-json/" --ignore-url="xmlrpc" --check-extern --file-output=text
     mv linkchecker-out.txt $REPORT_DIR/broken-links.txt
 
-    # Get logs for 404s @todo
-    # get-nginx-logs $SITENAME
-    # awk '($9 ~ /404/)' nginx-access.log* | awk '{print $7}' | sort | uniq -c | sort -rn > 404s.txt
+    # Get top 404s from nginx access logs.
+    collect-logs $SITENAME
+    mv logs $REPORT_DIR
+    awk '($9 ~ /404/)' logs/nginx-access.log* | awk '{print $7}' | sort | uniq -c | sort -rn > $REPORT_DIR/404s.txt
 
     # SFTP full lists to dev site (mkdir, upload, exit) @todo
     # SFTP_CONNECTION=$(terminus connection:info "${SITENAME}".dev --field=sftp_command)
