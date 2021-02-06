@@ -7,46 +7,73 @@ SITELIST="sites-test.txt"
 
 MONTH="2021-01" # @todo arrrrg
 
+create_file() {
+    SITENAME=${1}
+    REPORT_DIR=reports/output/$SITENAME-$MONTH
+    if [ ! -d "$REPORT_DIR" ]; then
+        mkdir "${REPORT_DIR}"
+    fi
+    REPORT_FILE="${REPORT_DIR}/index.html"
+    cp reports/template.html "${REPORT_FILE}"
+}
+
 # Loop through all sites on the list.
 while IFS='' read -r SITENAME || [ -n "${SITENAME}" ]; do
 
     # Copy the report template.
-    REPORT_DIR=reports/output/$SITENAME-$MONTH
-    mkdir "${REPORT_DIR}"
-    REPORT_FILE="${REPORT_DIR}/index.html"
-    cp reports/template.html "${REPORT_FILE}"
+    create_file "${SITENAME}"
 
-    PRIMARY_DOMAIN="$(terminus domain:list --format=json "${SITENAME}".live | jq -c '.[] | select(.primary=="true")')"
-    # @todo fallback to first custom domain if we don't have a primary domain set
+    DOMAINS="$(terminus domain:list --format=json "${SITENAME}".live)"
+    PRIMARY_DOMAIN="$(echo "${DOMAINS}" | jq -c '.[] | select(.primary==true) | .id')"
+    if [ -z "$PRIMARY_DOMAIN" ]; then
+        PRIMARY_DOMAIN="live-$SITENAME.pantheonsite.io"
+    fi
 
     # Get code updates from this month.
     # @todo these timestamps are in UTC. 
-    # Commits made late in the day on the last day of the month will be in the wrong report.
-    COMMITS="$(terminus env:code-log --format=json "${SITENAME}".live | jq -c '.[] | select(.datetime | contains('\"$MONTH\"'))')"
+    # Might be wrong for commits at the end of the last day of the month.
+    COMMITS="$(terminus env:code-log --fields=datetime,message --format=json "${SITENAME}".live | jq -c '.[] | select(.datetime | contains('\"$MONTH\"'))')"
+    COMMITS_JSON=$(echo "${COMMITS}" | jq -s '.')
 
     # Health checks.
-    #UPTIME= # @todo pull from Pingdom PINGDOM_API_TOKEN_PERSONAL
+    # UPTIME= # @todo pull from Pingdom PINGDOM_API_TOKEN_PERSONAL
 
     # Backups
-    # terminus workflow:list catparty --format=json | jq -c '.[] | select(.workflow | contains("Automated backup for the \"live\""))'
-    #BACKUPS_ENABLED= (True if any returned)
-    #LATEST_BACKUP= (get top entry)
+    BACKUPS="$(terminus workflow:list "${SITENAME}" --format=json | jq -c '.[] | select(.workflow | contains("Automated backup for the \"live\""))')"
+    BACKUPS_ENABLED="True"
+    if [ -z "$BACKUPS" ]; then
+        BACKUPS_ENABLED="False"
+    fi
+    GOOD_BACKUPS="$(echo "${BACKUPS}" | jq -c '. | select(.status=="succeeded")')"
+    LATEST_BACKUP=$(echo "${GOOD_BACKUPS}" | jq -s '.[0]')
 
-    #EXPLOITS=$(terminus wp launchcheck secure)
+    # Hackerz
+    EXPLOITS="$(terminus wp "${SITENAME}".live launchcheck -- secure --format=json < /dev/null | jq '.exploited.result')"
 
-    # Traffic report.
-    #404s/Broken Links
-    #linkchecker https://www.ccrp.org/ --ignore-url="/wp-json/" --file-output=csv
-    #awk '($9 ~ /404/)' nginx-access.log* | awk '{print $7}' | sort | uniq -c | sort -rn > 404s.txt
-    #terminus env:metrics ccrp-org.live --period=month
+    # Traffic report. Diff script?
+    # linkchecker https://${PRIMARY_DOMAIN} --ignore-url="/wp-json/" --file-output=csv
+    # awk '($9 ~ /404/)' nginx-access.log* | awk '{print $7}' | sort | uniq -c | sort -rn > 404s.txt
+    # SFTP full lists to dev site (mkdir, upload, return link?) @todo
+    
+    TRAFFIC_REPORT_URL="https://${PRIMARY_DOMAIN}/wp-content/uploads/maintenance-reports/${MONTH}"
+    PANTHEON_METRICS="$(terminus env:metrics "${SITENAME}".live --period=month --datapoints=2 --format=json | jq -s '.')"
 
     # Write all our findings to a JSON file for use by the report template.
-    mkdir "${REPORT_DIR}"/json
+    if [ ! -d "$REPORT_DIR/json" ]; then
+        mkdir "${REPORT_DIR}"/json
+    fi
     JSON_STRING=$( jq -n \
                   --arg site "$SITENAME" \
-                  --arg updates "$COMMITS" \
+                  --argjson updates "$COMMITS_JSON" \
                   --arg domain "$PRIMARY_DOMAIN" \
-                  '[{updates: $updates, site: $site, domain: $domain}]' )
+                  --arg backups_on "$BACKUPS_ENABLED" \
+                  --argjson backups_latest "$LATEST_BACKUP" \
+                  --argjson exploits "$EXPLOITS" \
+                  --argjson metrics "$PANTHEON_METRICS" \
+                  --arg trafficURL "$TRAFFIC_REPORT_URL" \
+                  '[{updates: $updates, site:$site, domain:$domain, backups_on:$backups_on, backups_latest:$backups_latest, exploits:$exploits, metrics:$metrics, trafficURL: $trafficURL}]' )
     echo "${JSON_STRING}" > "${REPORT_DIR}"/json/report.json
+
+    # Convert the HTML file to a PDF?
 
 done < $SITELIST
