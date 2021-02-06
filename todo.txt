@@ -14,24 +14,25 @@
 [x] Monthly update list [!]
 
 - Health checks
--- Backup list [!]
+[x] Backup list [!]
 -- Pingdom uptime check [!]
--- Exploits check [!]
+[x] Exploits check [!]
 
 - Traffic checks
 -- Broken Link report [!]
 -- Top 404s [!]
--- Monthly visits, page views
+[x] Monthly visits, page views
 -- +/- from last month
 -- Pantheon plan check
 -- IPs flagged/blocked
 
 - Site performance checks
 -- Lighthouse audit
+-- Pingdom response time?
 -- Error log report
 
 - Report builder
--- Assemble output from above scripts into a report [!]
+[x] Assemble output from above scripts into a report [!]
 
 - Deploy to site and return URL/email msg body (sftp up to live env uploads dir maybe?)
 -- Could lock this page down to wp-admins if we serve it via a PHP script

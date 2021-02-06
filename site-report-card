@@ -5,7 +5,7 @@ set -eou pipefail
 #SITELIST="sites-test.txt"
 SITELIST="sites.txt"
 
-MONTH=${1} # e.g, 2021-01
+MONTH=${1} # e.g, 2021-01 # @todo throw a nice friendly error when i forget this
 
 create_file() {
     SITENAME=${1}
@@ -45,9 +45,9 @@ while IFS='' read -r SITENAME || [ -n "${SITENAME}" ]; do
 
     # Backups
     BACKUPS="$(terminus workflow:list "${SITENAME}" --format=json | jq -c '.[] | select(.workflow | contains("Automated backup for the \"live\""))')"
-    BACKUPS_ENABLED="True"
+    BACKUPS_ENABLED="Yes"
     if [ -z "$BACKUPS" ]; then
-        BACKUPS_ENABLED="False"
+        BACKUPS_ENABLED="No"
     fi
     GOOD_BACKUPS="$(echo "${BACKUPS}" | jq -c '. | select(.status=="succeeded")')"
     LATEST_BACKUP=$(echo "${GOOD_BACKUPS}" | jq -s '.[0]')
@@ -63,7 +63,7 @@ while IFS='' read -r SITENAME || [ -n "${SITENAME}" ]; do
     # eval $SFTP_CONNECTION
     
     TRAFFIC_REPORT_URL="https://${PRIMARY_DOMAIN}/wp-content/uploads/maintenance-reports/${MONTH}"
-    PANTHEON_METRICS="$(terminus env:metrics "${SITENAME}".live --period=month --datapoints=2 --format=json | jq -s '.')"
+    PANTHEON_METRICS="$(terminus env:metrics "${SITENAME}".live --period=month --datapoints=2 --format=json)"
 
     # Write all our findings to a JSON file for use by the report template.
     if [ ! -d "$REPORT_DIR/json" ]; then
@@ -71,6 +71,7 @@ while IFS='' read -r SITENAME || [ -n "${SITENAME}" ]; do
     fi
     JSON_STRING=$( jq -n \
                   --arg site "$SITENAME" \
+                  --arg month "$MONTH" \
                   --argjson updates "$COMMITS_JSON" \
                   --arg domain "$PRIMARY_DOMAIN" \
                   --arg uptime "$UPTIME" \
@@ -79,7 +80,7 @@ while IFS='' read -r SITENAME || [ -n "${SITENAME}" ]; do
                   --argjson exploits "$EXPLOITS" \
                   --argjson metrics "$PANTHEON_METRICS" \
                   --arg trafficURL "$TRAFFIC_REPORT_URL" \
-                  '[{updates: $updates, site:$site, domain:$domain, uptime:$uptime, backups_on:$backups_on, backups_latest:$backups_latest, exploits:$exploits, metrics:$metrics, trafficURL: $trafficURL}]' )
+                  '[{site:$site, month,$month, updates: $updates, domain:$domain, uptime:$uptime, backups_on:$backups_on, backups_latest:$backups_latest, exploits:$exploits, metrics:$metrics, trafficURL: $trafficURL}]' )
     echo "${JSON_STRING}" > "${REPORT_DIR}"/json/report.json
 
 done < $SITELIST

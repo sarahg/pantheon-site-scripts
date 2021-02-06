@@ -10,8 +10,14 @@ body {
 h1 {
     margin-bottom: .67em;
 }
-
 h2 {
+    
+}
+h3 {
+    opacity: .8;
+}
+
+h4 {
     margin: 0 0 2em;
     font-style: italic;
 }
