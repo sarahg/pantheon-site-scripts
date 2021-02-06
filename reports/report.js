@@ -50,6 +50,26 @@ fetch('json/report.json').then(response => {
   }
 
   // Create update list. @todo
+  let updates = data[0].updates;
+  let updatesMarkup = "";
+  if (updates === undefined || updates.length == 0) {
+    updatesMarkup = "<p>No updates needed this month.</p>";
+  }
+  else {
+    updatesMarkup = "<ul>";
+    for (const update in updates) {
+        let datetime = updates[update].datetime;
+        let d = new Date(datetime);
+        let options = {
+          month: "short",
+          day: "2-digit",
+        };
+        let updateDate = d.toLocaleString('en-US', options);
+        updatesMarkup += `<li>${updates[update].message}<br><small>${updateDate}</small></li>`;
+    }
+    updatesMarkup += "</ul>";
+  }
+  document.querySelector("#report-updates").insertAdjacentHTML('afterbegin', updatesMarkup)
 
 }).catch(err => {
   console.error('Error loading report.json: ' + err)
