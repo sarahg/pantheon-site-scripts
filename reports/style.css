@@ -1,0 +1,21 @@
+body {
+    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+    font-size: 1em;
+    line-height: 1.5em;
+    padding: .5em 2em;
+    background: white;
+    color: #333;
+}
+
+h1 {
+    margin-bottom: .67em;
+}
+
+h2 {
+    margin: 0 0 2em;
+    font-style: italic;
+}
+
+section {
+    margin-top: 1em;
+}
