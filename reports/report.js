@@ -49,7 +49,7 @@ fetch('json/report.json').then(response => {
       .setAttribute("href", linkBase + "/" + report + ".txt");
   }
 
-  // Create update list. @todo
+  // Create update list.
   let updates = data[0].updates;
   let updatesMarkup = "";
   if (updates === undefined || updates.length == 0) {
