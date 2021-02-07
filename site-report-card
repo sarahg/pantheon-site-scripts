@@ -10,11 +10,10 @@ SITELIST="sites.txt"
 MONTH=${1} # e.g, 2021-01 # @todo throw a nice friendly error when i forget this
 # or just default to last month
 
-REPORT_DIR=reports/output/$SITENAME-$MONTH
-
 # Copy the report template into a new dir for this month.
 create_file() {
     SITENAME=${1}
+    REPORT_DIR=${2}
     if [ ! -d "$REPORT_DIR" ]; then
         mkdir "${REPORT_DIR}"
     fi
@@ -28,9 +27,10 @@ create_file() {
 
 # Loop through all sites on the list.
 while IFS='' read -r SITENAME || [ -n "${SITENAME}" ]; do
-
+    
     # Copy the report template.
-    create_file "${SITENAME}"
+    REPORT_DIR=reports/output/$SITENAME-$MONTH
+    create_file "${SITENAME}" "${REPORT_DIR}"
 
     DOMAINS="$(terminus domain:list --format=json "${SITENAME}".live)"
     PRIMARY_DOMAIN="$(echo "${DOMAINS}" | jq -r '.[] | select(.primary==true) | .id')"
@@ -63,13 +63,12 @@ while IFS='' read -r SITENAME || [ -n "${SITENAME}" ]; do
     EXPLOITS="$(terminus wp "${SITENAME}".live launchcheck -- secure --format=json < /dev/null | jq '.exploited.result')"
 
     # Traffic checks: broken links, 404s.
-    linkchecker https://"${PRIMARY_DOMAIN}" --ignore-url="/wp-json/" --ignore-url="xmlrpc" --check-extern --file-output=text
+    linkchecker https://"${PRIMARY_DOMAIN}" --ignore-url="/wp-json/" --ignore-url="xmlrpc" --check-extern --file-output=text < /dev/null
     mv linkchecker-out.txt "${REPORT_DIR}"/broken-links.txt
 
     # Get top 404s from nginx access logs.
-    collect-logs "${SITENAME}"
-    mv logs "${REPORT_DIR}"
-    awk '($9 ~ /404/)' logs/nginx-access.log* | awk '{print $7}' | sort | uniq -c | sort -rn > "${REPORT_DIR}"/404s.txt
+    collect-logs "${SITENAME}" "${MONTH}"
+    awk '($9 ~ /404/)' logs/${SITENAME}/* | awk '{print $7}' | sort | uniq -c | sort -rn > "${REPORT_DIR}"/404s.txt
 
     # SFTP full lists to dev site (mkdir, upload, exit) @todo
     # SFTP_CONNECTION=$(terminus connection:info "${SITENAME}".dev --field=sftp_command)
