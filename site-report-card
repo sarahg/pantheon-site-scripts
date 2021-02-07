@@ -62,19 +62,18 @@ while IFS='' read -r SITENAME || [ -n "${SITENAME}" ]; do
     # Hackerz
     EXPLOITS="$(terminus wp "${SITENAME}".live launchcheck -- secure --format=json < /dev/null | jq '.exploited.result')"
 
-    # Traffic checks: broken links, 404s.
-    linkchecker https://"${PRIMARY_DOMAIN}" --ignore-url="/wp-json/" --ignore-url="xmlrpc" --check-extern --file-output=text < /dev/null
-    mv linkchecker-out.txt "${REPORT_DIR}"/broken-links.txt
+    # Traffic checks: broken links, 404s. @todo loop breaks here
+    #linkchecker https://"${PRIMARY_DOMAIN}" --ignore-url="/wp-json/" --ignore-url="xmlrpc" --check-extern --file-output=text
+    #mv linkchecker-out.txt "${REPORT_DIR}"/"${MONTH}"-broken-links.txt
 
     # Get top 404s from nginx access logs.
-    collect-logs "${SITENAME}" "${MONTH}"
-    awk '($9 ~ /404/)' logs/${SITENAME}/* | awk '{print $7}' | sort | uniq -c | sort -rn > "${REPORT_DIR}"/404s.txt
+    #collect-logs "${SITENAME}" "${MONTH}"
+    #awk '($9 ~ /404/)' logs/${SITENAME}/* | awk '{print $7}' | sort | uniq -c | sort -rn > "${REPORT_DIR}"/"${MONTH}"-404s.txt
 
     # SFTP full lists to dev site (mkdir, upload, exit) @todo
-    # SFTP_CONNECTION=$(terminus connection:info "${SITENAME}".dev --field=sftp_command)
-    # eval $SFTP_CONNECTION?
-    
-    TRAFFIC_REPORT_URL="https://${PRIMARY_DOMAIN}/wp-content/uploads/maintenance-reports/${MONTH}"
+    # upload-reports $sitename $month
+
+    TRAFFIC_REPORT_URL="https://${PRIMARY_DOMAIN}/wp-content/uploads/maintenance-reports"
     PANTHEON_METRICS="$(terminus env:metrics "${SITENAME}".live --period=month --datapoints=2 --format=json)"
 
     # Write all our findings to a JSON file for use by the report template.

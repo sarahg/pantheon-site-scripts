@@ -1,0 +1,20 @@
+#!/bin/bash
+
+set -eou pipefail
+
+SITENAME=${1}
+MONTH=${2}
+
+# @todo not working, just hangs, no errors, ugh 
+cd reports/output/${SITENAME}-${MONTH}
+
+# Connect via SFTP.
+COMMAND=$(terminus connection:info "${SITENAME}".live --field=sftp_command)
+eval $COMMAND:code/wp-content/uploads/maintenance-reports >>EOF
+
+    # Upload files.
+    put 404s.txt
+    put broken-links.txt
+
+    quit
+EOF
