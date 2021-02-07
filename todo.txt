@@ -19,8 +19,8 @@
 [x] Exploits check [!]
 
 - Traffic checks
--- Broken Link report [!]
--- Top 404s [!]
+[x] Broken Link report [!]
+[x] Top 404s [!]
 [x] Monthly visits, page views
 -- +/- from last month
 -- Pantheon plan check
@@ -33,9 +33,6 @@
 
 - Report builder
 [x] Assemble output from above scripts into a report [!]
-
-- Deploy to site and return URL/email msg body (sftp up to live env uploads dir maybe?)
--- Could lock this page down to wp-admins if we serve it via a PHP script
 
 - Set up on GCP Cloud Scheduler https://cloud.google.com/scheduler/
 - Post to Slack
