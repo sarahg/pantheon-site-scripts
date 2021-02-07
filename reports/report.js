@@ -46,7 +46,7 @@ fetch('json/report.json').then(response => {
   for (const report of seoReports) {
     document
       .querySelector(`.report-${report}-url`)
-      .setAttribute("href", linkBase + "/" + report + ".txt");
+      .setAttribute("href", linkBase + "/" + data[0].month + '-' + report + ".txt");
   }
 
   // Create update list.
