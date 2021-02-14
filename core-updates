@@ -4,11 +4,8 @@ set -eou pipefail
 
 date
 
-TAG="testing"
-#TAG="maintenance"
-
-ORG_UUID=$(jq -r '.orgID' config.json) 
-SITES=$(terminus org:site:list --format=list --tag=${TAG} --filter="framework=wordpress" -- $ORG_UUID)
+#SITELIST="sites-test.txt"
+SITELIST="sites.txt"
 
 # Make sure the dev env is clean.
 # Requires Sarah's Terminus fork to add the "uncommitted_changes" field.
@@ -30,7 +27,7 @@ while read -r SITE_UUID; do
         terminus connection:set "${SITE_UUID}".dev git
     fi
 
-done <<< "$SITES"
+done < $SITELIST
 
 echo "[notice] Running core updates..."
-terminus site:mass-update:apply <<< "$SITES"
+terminus site:mass-update:apply < "$SITELIST"
