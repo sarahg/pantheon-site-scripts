@@ -4,6 +4,8 @@ set -eou pipefail
 
 date
 
+terminus auth:login --email=sarah@sarahgerman.com
+
 #SITELIST="sites-test.txt"
 SITELIST="sites.txt"
 
