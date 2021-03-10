@@ -15,7 +15,7 @@ VRT requires backstopJS. If needed, run `npm install -g backstopjs` to install g
 Running vrt requires a site-specific config file in `backstop-config/`.
 
 3) test-and-deploy
-4) site-report-card
+4) site-report-card (monthly)
 
 ## Install
 

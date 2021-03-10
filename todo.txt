@@ -5,10 +5,12 @@
 -- Write all script output to a logfile
 -- Wrapper script to run everything
 -- Quick rollback script (restore live?)
+-- Flag or something to run for just 1 site?
 
 [x] Basic VRT
--- Get tests for CCRP to pass regardless of content edits
--- Or run tests against a multidev
+[x] Run tests against a multidev
+-- Exceptions for CCRP
+-- Add more pages
 
 == REPORT ==
 [x] Monthly update list [!]
@@ -30,6 +32,7 @@
 -- Lighthouse audit
 -- Pingdom response time?
 -- Error log report
+-- Show diffs from last month?
 
 - Report builder
 [x] Assemble output from above scripts into a report [!]
