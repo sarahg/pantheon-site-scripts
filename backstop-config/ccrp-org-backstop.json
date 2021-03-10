@@ -33,7 +33,7 @@
     {
       "label": "ccrp-org",
       "cookiePath": "backstop_data/engine_scripts/cookies.json",
-      "url": "https://test-ccrp-org.pantheonsite.io/",
+      "url": "https://vrt-ccrp-org.pantheonsite.io/",
       "referenceUrl": "https://live-ccrp-org.pantheonsite.io",
       "readyEvent": "",
       "readySelector": "",
