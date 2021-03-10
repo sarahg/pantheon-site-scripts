@@ -9,7 +9,6 @@ SITELIST="sites.txt"
 # Pantheon takes a few seconds to register the code diffs as committable.
 OSD_SLEEP_INTERVAL=7
 
-# @TODO This loop only runs for the first site.
 # Loop through all sites on the list.
 while IFS='' read -r SITENAME || [ -n "${SITENAME}" ]; do
     echo "Site: $SITENAME"
@@ -35,7 +34,7 @@ while IFS='' read -r SITENAME || [ -n "${SITENAME}" ]; do
         done
 
         # Apply DB updates on dev all at once.
-        terminus wp "${SITENAME}".dev -- core update-db
+        terminus wp "${SITENAME}".dev -- core update-db < /dev/null
 
         # Deploy to Test env.
         # @todo build a full update list and use it for the note
