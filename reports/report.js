@@ -41,13 +41,13 @@ fetch('json/report.json').then(response => {
   }
 
   // Fill in links for SEO reports.
-  let linkBase = data[0].trafficURL;
+  /*let linkBase = data[0].trafficURL;
   let seoReports = ['404s', 'broken-links'];
   for (const report of seoReports) {
     document
       .querySelector(`.report-${report}-url`)
       .setAttribute("href", linkBase + "/" + data[0].month + '-' + report + ".txt");
-  }
+  }*/
 
   // Create update list.
   let updates = data[0].updates;
