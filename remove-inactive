@@ -48,7 +48,7 @@ then
     echo "$SITENAME has inactive themes. Removing..."
     for THEME in $THEMES; do
         echo "Removing ${THEME}"
-        terminus wp "${SITENAME}".dev -- theme delete ${THEME} < /dev/null
+        terminus wp "${SITENAME}".dev -- theme delete "${THEME}" < /dev/null
         MESSAGE="Remove inactive theme: ${THEME}."
         sleep $OSD_SLEEP_INTERVAL
         terminus env:commit "${SITENAME}".dev --message="${MESSAGE}"
