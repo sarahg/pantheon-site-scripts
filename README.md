@@ -20,7 +20,7 @@ Running vrt requires a site-specific config file in `backstop-config/`.
 ## Install
 
 ### Requirements
-* Sarah's [Terminus fork](https://github.com/sarahg/terminus), checked out to the `env-info-diffstat` branch (@TODO Write a test and make a PR to actual Terminus with this, or rethink steps that utilize the `uncommitted_changes` field in env:info)
+* [Terminus Mass Update](https://github.com/pantheon-systems/terminus-mass-update) plugin
 * jq: https://stedolan.github.io/jq/
 * Make sure this repo is in your `$PATH`:
 
