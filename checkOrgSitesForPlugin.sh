@@ -13,7 +13,7 @@
 FIND_PLUGIN=${1}
 
 # Get WordPress sites with a paid site plan.
-PAID_WP_SITES="$(terminus org:site:list $PANTHEON_ORG_ID --filter="plan_name!=sandbox&&framework=wordpress" --format=list --field=Name)"
+PAID_WP_SITES="$(terminus org:site:list "$PANTHEON_ORG_ID" --filter="plan_name!=sandbox&&framework=wordpress" --format=list --field=Name)"
 
 # Check each site to see if it has the given plugin.
 while read -r SITENAME; do
