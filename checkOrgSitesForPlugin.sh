@@ -1,10 +1,16 @@
 #!/bin/bash
 
-FIND_PLUGIN=${1}
+# USAGE
+# This script checks all sites in a Pantheon org for a given WordPress plugin.
+# This may be useful in the event of an urgent security release.
+# To run this, enter this command: ./checkOrgSitesForPlugin.sh plugin-slug
+# Example: ./checkOrgSitesForPlugin.sh woo-gutenberg-products-block
 
 # Paste your Org ID here, or set it as an environment variable.
 # You can find your Org ID by running: "terminus org:list"
-# PANTHEON_ORG_ID="some-long-string-of-characters"
+# PANTHEON_ORG_ID="1439ef14-9fed-428e-8943-902e36c763a9"
+
+FIND_PLUGIN=${1}
 
 # Get WordPress sites with a paid site plan.
 PAID_WP_SITES="$(terminus org:site:list $PANTHEON_ORG_ID --filter="plan_name!=sandbox&&framework=wordpress" --format=list --field=Name)"
@@ -31,7 +37,7 @@ while read -r SITENAME; do
             # terminus env:clear-cache "${SITENAME}".test
             # terminus wp "${SITENAME}".test -- core update-db < /dev/null
 
-            # And un-comment this if you want to make a backup and push to Live:
+            # And un-comment this if you want to make a database backup and push to Live:
 
             # terminus backup:create "${SITENAME}".live --element=db
             # terminus env:deploy "${SITENAME}".live
