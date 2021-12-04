@@ -1,13 +1,14 @@
 #!/bin/bash
 
+# Deploy WordPress upates to a list of sites.
+#
+# This creates a database backup, and deploys
+# Test to Live. Includes update-db and a cache clear.
+#
+# Usage: pan-bulk-deploy SITES
+
 set -eou pipefail
 
-#SITELIST="sites-test.txt"
-SITELIST="sites.txt"
-
-# @TODO Throw light traffic at the Test site and check for errors/500s
-
-# Make a backup and deploy to Live
 # @todo skip if there isn't anything to deploy
 while IFS='' read -r SITENAME || [ -n "${SITENAME}" ]; do
     echo "Deploying $SITENAME..."

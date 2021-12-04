@@ -2,28 +2,19 @@
 
 Sarah's toolkit for maintenance work on sites running on [Pantheon](https://pantheon.io).
 
-## Run site updates
+## Usage
 
-Run these scripts sequentially:
+Check the code comment at the top of each script for specific usage directions, but most of these take an argument of SITES (Pantheon site names) and run an action over all of those specified sites.
 
-1) core-updates
-2) wp-plugin-updates
-3) run-vrt SITENAME
+```
+export SITES=updog,hotdogcorp
+./wp-core-updates $SITES
+```
 
-Optional. 
-VRT requires backstopJS. If needed, run `npm install -g backstopjs` to install globally.
-Running vrt requires a site-specific config file in `backstop-config/`.
+To run these in a Docker container, you can use the [Pantheon-Docker-Build-Tools-CI](https://github.com/pantheon-systems/docker-build-tools-ci) image (someday I'll add a Dockerfile here, too).
 
-3) test-and-deploy
-4) site-report-card (monthly)
+Check out the .circleci folder for examples of how to use these on a CI service and run them automatically on a schedule.
 
-## Install
+## Testing
 
-### Requirements
-* [Terminus Mass Update](https://github.com/pantheon-systems/terminus-mass-update) plugin
-* jq: https://stedolan.github.io/jq/
-* Make sure this repo is in your `$PATH`:
-
-`export PATH="$PATH:$HOME/projects/pantheon-site-scripts"`
-
-You typically add this lines to ~/.bash_profile or ~/.zshrc.
+Run `./test.sh` to run Shellcheck over everything in the scripts directory. (Eventually I'd like to run this as a GitHub Action, but currently some are throwing errors, so let's start with that!).

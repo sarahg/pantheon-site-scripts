@@ -1,16 +1,23 @@
 #!/bin/bash
 
+# Creates a JSON object of site health info and
+# maintenance records. This can be used with a front-end app
+# to create a client-friendly report of the work we've done on the site
+# this month.
+#
+# Currently this writes to the local filesystem, so it's not suitable for CI usage.
+#
+# Usage: wp-monthly-report 2021-01
+
 set -eou pipefail
 
 start=$(date +%s)
-
-#SITELIST="sites-test.txt"
-SITELIST="sites.txt"
 
 MONTH=${1} # e.g, 2021-01 # @todo throw a nice friendly error when i forget this
 # or just default to last month
 
 # Copy the report template into a new dir for this month.
+# @todo move this to another project
 create_file() {
     SITENAME=${1}
     REPORT_DIR=${2}
@@ -48,6 +55,7 @@ while IFS='' read -r SITENAME || [ -n "${SITENAME}" ]; do
 
     # Health checks.
     # @todo pull from Pingdom
+    # Currently we just tweak this manually if it's not 100
     UPTIME="100%"
 
     # Backups
@@ -61,19 +69,6 @@ while IFS='' read -r SITENAME || [ -n "${SITENAME}" ]; do
 
     # Hackerz
     EXPLOITS="$(terminus wp "${SITENAME}".live launchcheck -- secure --format=json < /dev/null | jq '.exploited.result')"
-
-    # Traffic checks: broken links, 404s. @todo loop breaks here
-    #linkchecker https://"${PRIMARY_DOMAIN}" --ignore-url="/wp-json/" --ignore-url="xmlrpc" --check-extern --file-output=text
-    #mv linkchecker-out.txt "${REPORT_DIR}"/"${MONTH}"-broken-links.txt
-
-    # Get top 404s from nginx access logs.
-    #collect-logs "${SITENAME}" "${MONTH}"
-    #awk '($9 ~ /404/)' logs/${SITENAME}/* | awk '{print $7}' | sort | uniq -c | sort -rn > "${REPORT_DIR}"/"${MONTH}"-404s.txt
-
-    # SFTP full lists to dev site (mkdir, upload, exit) @todo
-    # upload-reports $sitename $month
-
-    TRAFFIC_REPORT_URL="https://${PRIMARY_DOMAIN}/wp-content/uploads/maintenance-reports"
     PANTHEON_METRICS="$(terminus env:metrics "${SITENAME}".live --period=month --datapoints=2 --format=json)"
 
     # Write all our findings to a JSON file for use by the report template.
@@ -90,8 +85,7 @@ while IFS='' read -r SITENAME || [ -n "${SITENAME}" ]; do
                   --argjson backups_latest "$LATEST_BACKUP" \
                   --argjson exploits "$EXPLOITS" \
                   --argjson metrics "$PANTHEON_METRICS" \
-                  --arg trafficURL "$TRAFFIC_REPORT_URL" \
-                  '[{site:$site, month,$month, updates: $updates, domain:$domain, uptime:$uptime, backups_on:$backups_on, backups_latest:$backups_latest, exploits:$exploits, metrics:$metrics, trafficURL: $trafficURL}]' )
+                  '[{site:$site, month,$month, updates: $updates, domain:$domain, uptime:$uptime, backups_on:$backups_on, backups_latest:$backups_latest, exploits:$exploits, metrics:$metrics}]' )
     echo "${JSON_STRING}" > "${REPORT_DIR}"/json/report.json
 
 done < $SITELIST

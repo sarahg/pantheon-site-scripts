@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Collects PHP and nginx logs from a single site.
+#
+# Usage: pan-collect-logs SITENAME
+
 SITENAME=${1}
 
 function site-id {

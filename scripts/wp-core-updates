@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# Runs a WordPress core update for a list of sites.
+#
+# Usage: wp-core-updates SITES
+
+set -eou pipefail
+
+echo "Running core updates..."
+terminus site:mass-update:apply < "$SITES"

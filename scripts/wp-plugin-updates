@@ -1,9 +1,11 @@
 #!/bin/bash
 
-set -eou pipefail
+# Apply plugin updates for a list of sites,
+# and deploy them to the Test environment.
+#
+# Usage: wp-plugin-updates SITES
 
-#SITELIST="sites-test.txt"
-SITELIST="sites.txt"
+set -eou pipefail
 
 # Number of seconds to pause between applying the update and trying to commit.
 # Pantheon takes a few seconds to register the code diffs as committable.
@@ -46,11 +48,11 @@ while IFS='' read -r SITENAME || [ -n "${SITENAME}" ]; do
         terminus connection:set "${SITENAME}".dev git 
 
     fi
-done < "$SITELIST"
+done < "$SITES"
 
 # Updates are done, go check them out.
 # @todo handling for cases where there are no updates.
 echo "[notice] Go check the Test sites: "
 while IFS='' read -r SITENAME || [ -n "${SITENAME}" ]; do
     echo -e "- https://test-${SITENAME}.pantheonsite.io"
-done < "$SITELIST"
+done < "$SITES"
