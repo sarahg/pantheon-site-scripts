@@ -10,7 +10,7 @@ jobs:
     # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
     docker:
       # Specify the version you desire here
-      - image: quay.io/pantheon-public/php-ci:4.x
+      - image: quay.io/pantheon-public/build-tools-ci:6.x
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -36,7 +36,6 @@ jobs:
     # Add steps to the job
     # See: https://circleci.com/docs/2.0/configuration-reference/#steps
     steps:
-      - run: sudo docker-php-ext-install zip
       - run: terminus -n auth:login --machine-token="$TERMINUS_TOKEN"
       - run: terminus backup:create sgwp.dev
 
