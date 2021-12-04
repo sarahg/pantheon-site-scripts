@@ -14,3 +14,7 @@ export SITES=updog,hotdogcorp
 To run these in a Docker container, you can use the [Pantheon-Docker-Build-Tools-CI](https://github.com/pantheon-systems/docker-build-tools-ci) image (someday I'll add a Dockerfile here, too).
 
 Check out the .circleci folder for examples of how to use these on a CI service and run them automatically on a schedule.
+
+## Testing
+
+Run `./test.sh` to run Shellcheck over everything in the scripts directory. (Eventually I'd like to run this as a GitHub Action, but currently some are throwing errors, so let's start with that!).
