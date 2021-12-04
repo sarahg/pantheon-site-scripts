@@ -11,7 +11,7 @@ export SITES=updog,hotdogcorp
 ./wp-core-updates $SITES
 ```
 
-To run these in a Docker container, you can use the [Pantheon-Docker-Build-Tools-CI](https://github.com/pantheon-systems/docker-build-tools-ci) image (someday I'll add a Dockerfile here, too).
+To run these in a Docker container, you can use the [Pantheon-Docker-Build-Tools-CI](https://github.com/pantheon-systems/docker-build-tools-ci) image (someday I'll add a Dockerfile here). To run these locally, you'll need [Terminus](https://pantheon.io/docs/terminus/), [Terminus Mass Update Plugin](https://github.com/pantheon-systems/terminus-mass-update), [jq](https://stedolan.github.io/jq/download/), and [Shellcheck](https://github.com/koalaman/shellcheck).
 
 Check out the .circleci folder for examples of how to use these on a CI service and run them automatically on a schedule.
 
