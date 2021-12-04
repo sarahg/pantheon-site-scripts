@@ -1,19 +1,16 @@
 #!/bin/bash
 
-# USAGE
-# This script checks all sites in a Pantheon org for a given WordPress plugin.
+# This script checks all paid sites in a Pantheon org for a given WordPress plugin.
 # This may be useful in the event of an urgent security release.
-# To run this, enter this command: ./checkOrgSitesForPlugin.sh plugin-slug
-# Example: ./checkOrgSitesForPlugin.sh woo-gutenberg-products-block
+# 
+# Usage:
+# pan-wp-find-plugin your-org-id plugin-slug
 
-# Paste your Org ID here, or set it as an environment variable.
-# You can find your Org ID by running: "terminus org:list"
-# PANTHEON_ORG_ID="1439ef14-9fed-428e-8943-902e36c763a9"
-
-FIND_PLUGIN=${1}
+PANTHEON_ORG_UUID={$1}
+FIND_PLUGIN=${2}
 
 # Get WordPress sites with a paid site plan.
-PAID_WP_SITES="$(terminus org:site:list "$PANTHEON_ORG_ID" --filter="plan_name!=sandbox&&framework=wordpress" --format=list --field=Name)"
+PAID_WP_SITES="$(terminus org:site:list "$PANTHEON_ORG_UUID" --filter="plan_name!=sandbox&&framework=wordpress" --format=list --field=Name)"
 
 # Check each site to see if it has the given plugin.
 while read -r SITENAME; do

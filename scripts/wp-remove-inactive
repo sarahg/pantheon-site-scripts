@@ -1,13 +1,14 @@
 #!/bin/bash
 
 # Clean up inactive plugins and themes.
-# Usage: remove-inactive SITENAME
+#
+# Usage: remove-inactive SITE
 
 set -eou pipefail
 
 SITENAME=${1}
 
-# We want to keep the latest core theme in case we need to troubleshoot theme issues.
+# We want to keep the latest core theme, just in case we need to troubleshoot theme issues.
 LATEST_CORE_THEME="twentytwentyone"
 
 # Number of seconds to pause between applying the update and trying to commit.
