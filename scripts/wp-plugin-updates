@@ -54,7 +54,7 @@ done
 # Updates are done, go check them out.
 # @todo handling for cases where there are no updates.
 echo "[notice] Go check the Test sites: "
-do
 for SITENAME in ${SITES//,/ }
+do
     echo -e "- https://test-${SITENAME}.pantheonsite.io"
 done
