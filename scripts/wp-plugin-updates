@@ -12,7 +12,8 @@ set -eou pipefail
 OSD_SLEEP_INTERVAL=7
 
 # Loop through all sites on the list.
-while IFS='' read -r SITENAME || [ -n "${SITENAME}" ]; do
+for SITENAME in ${SITES//,/ }
+do
     echo "Site: $SITENAME"
     # Check for plugin updates.
     PLUGINS="$(terminus wp "${SITENAME}".dev -- plugin update --all --format=json --dry-run < /dev/null | jq -c '.[]')"
@@ -48,11 +49,11 @@ while IFS='' read -r SITENAME || [ -n "${SITENAME}" ]; do
         terminus connection:set "${SITENAME}".dev git 
 
     fi
-done < "$SITES"
+done
 
 # Updates are done, go check them out.
 # @todo handling for cases where there are no updates.
 echo "[notice] Go check the Test sites: "
-while IFS='' read -r SITENAME || [ -n "${SITENAME}" ]; do
+for SITENAME in ${SITES//,/ }
     echo -e "- https://test-${SITENAME}.pantheonsite.io"
-done < "$SITES"
+done

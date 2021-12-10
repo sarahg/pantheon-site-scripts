@@ -10,17 +10,19 @@
 set -eou pipefail
 
 # @todo skip if there isn't anything to deploy
-while IFS='' read -r SITENAME || [ -n "${SITENAME}" ]; do
+for SITENAME in ${SITES//,/ }
+do
     echo "Deploying $SITENAME..."
     terminus backup:create "${SITENAME}".live --element=db
     terminus env:deploy --note="Maintenance updates." -- "${SITENAME}".live
     terminus wp "${SITENAME}".live -- core update-db < /dev/null
     terminus env:clear-cache "${SITENAME}".live
-done < $SITELIST
+done
 
 # @todo handling for cases where there are no updates.
 echo "[notice] Go check the Live sites: "
-while IFS='' read -r SITENAME || [ -n "${SITENAME}" ]; do
-    # @todo curl the homepage and verify HTTP/200
+for SITENAME in ${SITES//,/ }
+do
+    # @todo curl the homepage + login page and verify HTTP/200
     echo -e "- https://live-${SITENAME}.pantheonsite.io"
-done < $SITELIST
+done
