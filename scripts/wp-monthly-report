@@ -88,7 +88,7 @@ while IFS='' read -r SITENAME || [ -n "${SITENAME}" ]; do
                   '[{site:$site, month,$month, updates: $updates, domain:$domain, uptime:$uptime, backups_on:$backups_on, backups_latest:$backups_latest, exploits:$exploits, metrics:$metrics}]' )
     echo "${JSON_STRING}" > "${REPORT_DIR}"/json/report.json
 
-done < $SITELIST
+done < "$SITELIST"
 
 end=$(date +%s)
 runtime=$((end-start))

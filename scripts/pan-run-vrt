@@ -20,11 +20,11 @@ SITENAME=${1}
 CONFIG_FILE="backstop-config/${SITENAME}-backstop.json"
 
 # Create a multidev of Live.
-terminus multidev:create ${SITENAME}.live vrt
+terminus multidev:create "${SITENAME}".live vrt
 
 # Build a reference file and run VRT.
-backstop reference --configPath=${CONFIG_FILE}
-backstop test --configPath=${CONFIG_FILE}
+backstop reference --configPath="${CONFIG_FILE}"
+backstop test --configPath="${CONFIG_FILE}"
 
 # Remove the multidev.
-terminus multidev:delete ${SITENAME}.vrt
+terminus multidev:delete "${SITENAME}".vrt

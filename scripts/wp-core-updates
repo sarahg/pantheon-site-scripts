@@ -11,5 +11,5 @@ echo "Running core updates..."
 for SITENAME in ${SITES//,/ }
 do
     echo "Site: $SITENAME"
-    terminus upstream:updates:apply $SITENAME
+    terminus upstream:updates:apply "$SITENAME"
 done

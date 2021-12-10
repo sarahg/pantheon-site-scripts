@@ -6,7 +6,7 @@
 # Usage:
 # pan-wp-find-plugin your-org-id plugin-slug
 
-PANTHEON_ORG_UUID={$1}
+PANTHEON_ORG_UUID=${1}
 FIND_PLUGIN=${2}
 
 # Get WordPress sites with a paid site plan.
