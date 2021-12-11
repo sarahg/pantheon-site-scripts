@@ -1,31 +1,8 @@
-# PHP CircleCI 2.0 configuration file
-# See: https://circleci.com/docs/2.0/language-php/
-version: 2
-
-# Define a job to be invoked later in a workflow.
-# See: https://circleci.com/docs/2.0/configuration-reference/#jobs
-jobs:
-  build:
-    # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
-    # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
-    docker:
-      # Specify the version you desire here
-      - image: koalaman/shellcheck-alpine
-
-    environment:
-    #=========================================================================
-    # In addition to the environment variables defined in this file, also
-    # add the following variables in the Circle CI UI.
-    #
-    # See: https://circleci.com/docs/2.0/env-vars/
-    #
-    # SITES:  List of the Pantheon site to run tests on, e.g. my_site,my_site2
-    # TERMINUS_TOKEN: The Pantheon machine token
-    #=========================================================================
-      TZ: "/usr/share/zoneinfo/America/Chicago"
-
-    # Add steps to the job
-    # See: https://circleci.com/docs/2.0/configuration-reference/#steps
-    steps:
-      - checkout
-      - run: ./test.sh
+version: 2.1
+orbs:
+  shellcheck: circleci/shellcheck@2.2.4
+workflows:
+  validate_scripts:
+    jobs:
+      - shellcheck/check:
+          dir: ./scripts/bash
