@@ -5,7 +5,7 @@
 # This creates a database backup, and deploys
 # Test to Live. Includes update-db and a cache clear.
 #
-# Usage: pan-bulk-deploy SITES
+# Usage: ./pan-bulk-deploy.sh SITES
 
 set -eou pipefail
 

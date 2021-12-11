@@ -12,7 +12,7 @@
 # Docs: How to create a Backstop config file:
 # https://github.com/garris/BackstopJS#initializing-your-project
 #
-# Usage: pan-run-vrt SITENAME
+# Usage: ./pan-run-vrt.sh SITENAME
 
 set -eou pipefail
 

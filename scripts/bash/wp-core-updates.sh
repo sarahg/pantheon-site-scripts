@@ -2,7 +2,7 @@
 
 # Runs a WordPress core update for a list of sites in a text file.
 #
-# Usage: wp-core-updates
+# Usage: ./wp-core-updates.sh
 
 set -eou pipefail
 

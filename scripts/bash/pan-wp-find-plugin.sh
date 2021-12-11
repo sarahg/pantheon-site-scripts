@@ -4,7 +4,7 @@
 # This may be useful in the event of an urgent security release.
 # 
 # Usage:
-# pan-wp-find-plugin your-org-id plugin-slug
+# ./pan-wp-find-plugin.sh your-org-id plugin-slug
 
 PANTHEON_ORG_UUID=${1}
 FIND_PLUGIN=${2}

@@ -7,7 +7,7 @@
 #
 # Currently this writes to the local filesystem, so it's not suitable for CI usage.
 #
-# Usage: wp-monthly-report 2021-01
+# Usage: ./wp-monthly-report.sh 2021-01
 
 set -eou pipefail
 

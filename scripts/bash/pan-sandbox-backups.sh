@@ -2,7 +2,7 @@
 
 # Run a backup on each environment of a given list of sites.
 #
-# Usage: pan-sandbox-backups SITES
+# Usage: ./pan-sandbox-backups.sh SITES
 
 set -eou pipefail
 

@@ -3,7 +3,7 @@
 # This is not really suitable for automated testing in its current state;
 # this is mostly intended to speed up manual testing.
 #
-# Usage: ./scripts/bash/pan-wp-test-site
+# Usage: ./pan-wp-test-site.sh
 
 # Pantheon site name.
 RANDOM_ID=$(cat /dev/urandom | base64 | tr -dc '0-9a-zA-Z' | head -c5)

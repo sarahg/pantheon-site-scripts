@@ -3,7 +3,7 @@
 # Apply plugin updates for a list of sites,
 # and deploy them to the Test environment.
 #
-# Usage: wp-plugin-updates SITES
+# Usage: ./wp-plugin-updates.sh SITES
 
 set -eou pipefail
 

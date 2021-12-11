@@ -2,7 +2,7 @@
 
 # Clean up inactive plugins and themes.
 #
-# Usage: remove-inactive SITE
+# Usage: ./wp-remove-inactive.sh SITE
 
 set -eou pipefail
 

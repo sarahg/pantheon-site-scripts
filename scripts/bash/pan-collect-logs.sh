@@ -2,7 +2,7 @@
 
 # Collects PHP and nginx logs from a single site.
 #
-# Usage: pan-collect-logs SITENAME
+# Usage: ./pan-collect-logs.sh SITENAME
 
 SITENAME=${1}
 
