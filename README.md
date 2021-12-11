@@ -13,10 +13,4 @@ export SITES=updog,hotdogcorp
 
 To run these in a container, you can use the [Pantheon-Docker-Build-Tools-CI](https://github.com/pantheon-systems/docker-build-tools-ci) image. 
 
-To run these locally, you'll need [Terminus](https://pantheon.io/docs/terminus/), [jq](https://stedolan.github.io/jq/download/), and [Shellcheck](https://github.com/koalaman/shellcheck).
-
-Check out the .circleci folder for examples of how to use these on a CI service.
-
-## Testing
-
-Run `./test.sh` to run Shellcheck over everything in the scripts directory. (Eventually I'd like to run this as a GitHub Action, but currently some are throwing errors, so let's start with that!).
+To run these locally, you'll need [Terminus](https://pantheon.io/docs/terminus/), [jq](https://stedolan.github.io/jq/download/), and [Shellcheck](https://github.com/koalaman/shellcheck) for testing.
