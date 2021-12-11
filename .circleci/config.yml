@@ -10,16 +10,7 @@ jobs:
     # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
     docker:
       # Specify the version you desire here
-      - image: quay.io/pantheon-public/build-tools-ci:6.x
-
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # Using the RAM variation mitigates I/O contention
-      # for database intensive operations.
-      # - image: circleci/mysql:5.7-ram
-      #
-      # - image: redis:2.8.19
+      - image: cimg/base:2021.04
 
     environment:
     #=========================================================================
@@ -37,5 +28,4 @@ jobs:
     # See: https://circleci.com/docs/2.0/configuration-reference/#steps
     steps:
       - checkout
-      - run: terminus -n auth:login --machine-token="$TERMINUS_TOKEN"
-      - run: ./scripts/pan-sandbox-backups
+      - run: ./test.sh
