@@ -42,9 +42,8 @@ do
     terminus env:clear-cache "${SITENAME}".live
 
     # Flush Redis if it's enabled.
-    # @todo reuse REDIS_CMD output
     REDIS_CMD=$(terminus connection:info ${SITENAME}.live --field="redis_command")
-    if [ -n "${REDIS_CMD}" ]; then
+    if [ -n "${REDIS_CMD} --no-auth-warning" ]; then
         echo "Clearing Redis..."
         eval "$REDIS_CMD" flushall
     fi
