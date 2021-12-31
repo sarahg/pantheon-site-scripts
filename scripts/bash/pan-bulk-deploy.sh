@@ -15,7 +15,7 @@ DEPLOYED=()
 for SITENAME in ${SITES//,/ }
 do
     # Skip this site if there isn't anything to deploy.
-    DEPLOY_STATUS=$(terminus env:deploy "${SITENAME}"."${ENV}" 2>&1)
+    DEPLOY_STATUS=$(terminus env:deploy "${SITENAME}"."${ENV} --simulate" 2>&1)
     EMPTY_RESP="nothing to deploy"
 
     if [[ "$DEPLOY_STATUS" == *"$EMPTY_RESP"* ]]; then
