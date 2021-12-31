@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Deploy pending code changes to a list of sites.
+# Deploy pending code changes to Live for a list of sites.
 #
 # This creates a database backup, and deploys
 # Test to Live. Includes update-db/update.php, and
@@ -9,8 +9,6 @@
 # Usage: ./pan-bulk-deploy.sh SITES
 
 set -eou pipefail
-
-# @todo abort if there isn't anything to deploy
 
 for SITENAME in ${SITES//,/ }
 do
@@ -26,6 +24,12 @@ do
 
     if [ "$FRAMEWORK" == "drupal" ]; then
         terminus drush "${SITENAME}".live -- updb < /dev/null
+    fi
+
+    REDIS_CMD=$(terminus connection:info ${SITENAME}.live --field="redis_command")
+    if [ -n "${REDIS_CMD}" ]; then
+        echo "Clearing Redis..."
+        $(terminus connection:info ${SITENAME}.live --field="redis_command") flushall
     fi
 
     terminus env:clear-cache "${SITENAME}".live
