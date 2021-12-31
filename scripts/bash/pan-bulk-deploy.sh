@@ -15,13 +15,14 @@ DEPLOYED=()
 for SITENAME in ${SITES//,/ }
 do
     # Skip this site if there isn't anything to deploy.
-    DEPLOY_STATUS=$(terminus env:deploy "${SITENAME}"."${ENV} --simulate" 2>&1)
-    EMPTY_RESP="nothing to deploy"
-
-    if [[ "$DEPLOY_STATUS" == *"$EMPTY_RESP"* ]]; then
-        echo "No updates to deploy for $SITENAME."
-        continue
-    fi
+    # @todo this check actually deploys things :(
+    # rework with a check on terminus env:code-log instead
+    # DEPLOY_STATUS=$(terminus env:deploy "${SITENAME}"."${ENV}" --simulate 2>&1)
+    # EMPTY_RESP="nothing to deploy"
+    # if [[ "$DEPLOY_STATUS" == *"$EMPTY_RESP"* ]]; then
+        # echo "No updates to deploy for $SITENAME."
+        # continue
+    # fi
 
     # Backup and deploy.
     echo "Deploying $SITENAME..."
