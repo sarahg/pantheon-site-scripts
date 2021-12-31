@@ -26,4 +26,6 @@ Work in progress!
 From the `loadtest` directory:
 `cargo run --release -- --host https://example.com --report-file=report.html`
 
+Press CTRL+C to stop the test.
+
 This is a very basic example that just hits the homepage and is copied from the Goose "[Getting Started](https://book.goose.rs/getting-started/overview.html)" doc. Eventually it'd be neat to pair this with output from `scripts/bash/wp-extract-yoast-sitemap.sh` to crawl the full site.
