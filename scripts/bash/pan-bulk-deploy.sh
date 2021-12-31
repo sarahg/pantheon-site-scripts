@@ -15,7 +15,7 @@ DEPLOYED=()
 for SITENAME in ${SITES//,/ }
 do
     # Skip this site if there isn't anything to deploy.
-    DEPLOY_STATUS=$(terminus env:deploy ${SITENAME}.live 2>&1)
+    DEPLOY_STATUS=$(terminus env:deploy "${SITENAME}".live 2>&1)
     EMPTY_RESP="nothing to deploy"
 
     if [[ "$DEPLOY_STATUS" == *"$EMPTY_RESP"* ]]; then
@@ -42,13 +42,13 @@ do
     terminus env:clear-cache "${SITENAME}".live
 
     # Flush Redis if it's enabled.
-    REDIS_CMD=$(terminus connection:info ${SITENAME}.live --field="redis_command")
-    if [ -n "${REDIS_CMD} --no-auth-warning" ]; then
+    REDIS_CMD=$(terminus connection:info "${SITENAME}".live --field="redis_command")
+    if [ -n "${REDIS_CMD}" ]; then
         echo "Clearing Redis..."
-        eval "$REDIS_CMD" flushall
+        eval "$REDIS_CMD --no-auth-warning" flushall
     fi
 
-    DEPLOYED+=($SITENAME)
+    DEPLOYED+=("$SITENAME")
 done
 
 if (( ${#DEPLOYED[@]} )); then
