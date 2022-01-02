@@ -33,7 +33,8 @@ create_file() {
 #    "https://api.pingdom.com/api/3.1/checks" > ${CHECKS_JSON}
 
 # Loop through all sites on the list.
-while IFS='' read -r SITENAME || [ -n "${SITENAME}" ]; do
+for SITENAME in ${SITES//,/ }
+do
     
     # Copy the report template.
     REPORT_DIR=reports/output/$SITENAME-$MONTH
@@ -88,7 +89,7 @@ while IFS='' read -r SITENAME || [ -n "${SITENAME}" ]; do
                   '[{site:$site, month,$month, updates: $updates, domain:$domain, uptime:$uptime, backups_on:$backups_on, backups_latest:$backups_latest, exploits:$exploits, metrics:$metrics}]' )
     echo "${JSON_STRING}" > "${REPORT_DIR}"/json/report.json
 
-done < "$SITELIST"
+done
 
 end=$(date +%s)
 runtime=$((end-start))
