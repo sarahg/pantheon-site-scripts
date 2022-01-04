@@ -1,16 +1,13 @@
 #!/usr/local/bin/node
 
 /**
- * @file pan-json-secrets.js
+ * @file pan-wp-update-users.js
  * 
- * Fetch secrets.json files from each env of a given Pantheon site,
- * and prompt the user to remove secret keys and re-upload them.
- * 
- * This script is useful if you're transferring ownership of a site
- * and need to quickly remove tokens used for things like Quicksilver
- * Slack notifications.
+ * Remove all users with email addresses from a given domain from a WordPress site,
+ * and transfer their content to a new admin user.
  * 
  * Usage: ./scripts/node/wp-update-users.js hotdogs-corp.live steve.hotdogs@gmail.com myagency.biz
+ *
  * Arguments:
  *   siteEnv (str) a Pantheon site name and environment
  *   newAdminEmail (str) email address for the new site admin user
