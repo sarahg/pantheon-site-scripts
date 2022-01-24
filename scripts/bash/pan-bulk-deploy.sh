@@ -52,6 +52,7 @@ do
     DEPLOYED+=("$SITENAME")
 done
 
+# @todo DEPLOYED is not what we think it is, only returned first value
 if (( ${#DEPLOYED[@]} )); then
     echo "[notice] Code deployed: "
     for SITENAME in ${DEPLOYED//,/ }
