@@ -10,6 +10,8 @@ function site-id {
   terminus site:info "$1" --field=ID
 }
 
+# @todo: Add an option to only pull PHP logs?
+
 if [ ! -d "logs" ]; then
   mkdir logs
 fi
