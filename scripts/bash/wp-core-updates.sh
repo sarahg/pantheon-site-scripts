@@ -8,8 +8,7 @@ set -eou pipefail
 
 echo "Running core updates..."
 
-for SITENAME in ${SITES//,/ }
-do
-    echo "Site: $SITENAME"
-    terminus upstream:updates:apply "$SITENAME"
+for SITENAME in ${SITES//,/ }; do
+  echo "Site: $SITENAME"
+  terminus upstream:updates:apply "$SITENAME"
 done

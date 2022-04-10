@@ -21,7 +21,6 @@ fi
 
 SITE_UUID="$(site-id "${SITENAME}")"
 ENV=live
-for appserver in $(dig +short -4 appserver.$ENV."$SITE_UUID".drush.in);
-do
+for appserver in $(dig +short -4 appserver.$ENV."$SITE_UUID".drush.in); do
   rsync -rlvz --size-only --ipv4 --progress -e "ssh -p 2222" "$ENV.$SITE_UUID@$appserver:logs" "logs/${SITENAME}/appserver_$appserver"
 done
