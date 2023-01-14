@@ -6,7 +6,7 @@
 # Test to Live. Includes update-db/update.php, and
 # cache clears for both the CMS and Redis.
 #
-# Usage: ./pan-bulk-deploy.sh SITES ENV
+# Usage: ./pan-bulk-deploy.sh SITES
 
 set -eou pipefail
 
@@ -22,24 +22,24 @@ for SITENAME in ${SITES//,/ }; do
 
   # Backup and deploy.
   echo "Deploying $SITENAME..."
-  terminus backup:create "${SITENAME}"."${ENV}" --element=db
-  terminus env:deploy "${SITENAME}"."${ENV}" --note="Maintenance updates."
+  terminus backup:create "${SITENAME}".live --element=db
+  terminus env:deploy "${SITENAME}".live --note="Maintenance updates."
 
   # CMS-specific database operations.
   FRAMEWORK="$(terminus site:info "${SITENAME}" --field=Framework)"
   if [ "$FRAMEWORK" == "wordpress" ]; then
-    terminus wp "${SITENAME}"."${ENV}" -- core update-db </dev/null
+    terminus wp "${SITENAME}".live -- core update-db </dev/null
   fi
 
   if [ "$FRAMEWORK" == "drupal" ]; then
-    terminus drush "${SITENAME}"."${ENV}" -- updb </dev/null
+    terminus drush "${SITENAME}".live -- updb </dev/null
   fi
 
   # Clear the framework cache.
-  terminus env:clear-cache "${SITENAME}"."${ENV}"
+  terminus env:clear-cache "${SITENAME}".live
 
   # Flush Redis if it's enabled.
-  REDIS_CMD=$(terminus connection:info "${SITENAME}"."${ENV}" --field="redis_command")
+  REDIS_CMD=$(terminus connection:info "${SITENAME}".live --field="redis_command")
   if [ -n "${REDIS_CMD}" ]; then
     echo "Clearing Redis..."
     eval "$REDIS_CMD --no-auth-warning" flushall
