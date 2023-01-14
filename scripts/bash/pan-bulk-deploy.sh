@@ -14,14 +14,11 @@ DEPLOYED=()
 
 for SITENAME in ${SITES//,/ }; do
   # Skip this site if there isn't anything to deploy.
-  # @todo this check actually deploys things :(
-  # rework with a check on terminus env:code-log instead
-  # DEPLOY_STATUS=$(terminus env:deploy "${SITENAME}"."${ENV}" --simulate 2>&1)
-  # EMPTY_RESP="nothing to deploy"
-  # if [[ "$DEPLOY_STATUS" == *"$EMPTY_RESP"* ]]; then
-  # echo "No updates to deploy for $SITENAME."
-  # continue
-  # fi
+  LAST_COMMIT_STATUS=$(terminus env:code-log "${SITENAME}".test --field=labels | head -n 1)
+  if [[ "$LAST_COMMIT_STATUS" == *"live"* ]]; then
+    echo "No updates to deploy for $SITENAME."
+    continue
+  fi
 
   # Backup and deploy.
   echo "Deploying $SITENAME..."
@@ -51,10 +48,9 @@ for SITENAME in ${SITES//,/ }; do
   DEPLOYED+=("$SITENAME")
 done
 
-# @todo DEPLOYED is not what we think it is, only returned first value
 if ((${#DEPLOYED[@]})); then
   echo "[notice] Code deployed: "
-  for SITENAME in ${DEPLOYED//,/ }; do
+  for SITENAME in "${DEPLOYED[@]}"; do
     echo -e "- https://${ENV}-${SITENAME}.pantheonsite.io"
   done
 fi
